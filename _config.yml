@@ -1,0 +1,31 @@
+title: Param Bhavsar
+author:
+  name: Param Bhavsar
+  nav_title: Param Bhavsar'blog
+  email: bhavsarparam086@gmail.com
+description: #
+
+show_excerpts: false # set to true to show excerpts on the homepage
+
+twitter_username: Param087
+github_username:  param087
+linkedin_username: param-bhavsar
+
+minima:
+  date_format: "%b %-d, %Y"
+
+  # generate social links in footer
+  social_links:
+    twitter: param087
+    github:  param087
+    linkedin: param-bhavsar
+ 
+google_analytics: G-MY6WRJLD2Z
+disqus:
+  shortname: param087-github-io
+# Build settings
+theme: minima
+
+plugins:
+ - jekyll-feed
+ - jekyll-seo-tag

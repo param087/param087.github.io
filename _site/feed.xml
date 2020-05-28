@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-05-28T14:54:48+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Param Bhavsar</title><author><name>Param Bhavsar</name><email>bhavsarparam086@gmail.com</email></author><entry><title type="html">TensorFlow | GSoC’19: Swift library for Machine Learning</title><link href="http://localhost:4000/2019/08/25/swiftML.html" rel="alternate" type="text/html" title="TensorFlow | GSoC’19: Swift library for Machine Learning" /><published>2019-08-25T00:00:00+05:30</published><updated>2019-08-25T00:00:00+05:30</updated><id>http://localhost:4000/2019/08/25/swiftML</id><content type="html" xml:base="http://localhost:4000/2019/08/25/swiftML.html">&lt;p&gt;&lt;img src=&quot;/assets/images/GSoC-logo-horizontal.svg&quot; alt=&quot;GSoC&quot; /&gt;
+&lt;img src=&quot;/assets/images/tf_logo_social.png&quot; alt=&quot;TensrFlow&quot; /&gt;&lt;/p&gt;
+&lt;h2 id=&quot;task&quot;&gt;Task&lt;/h2&gt;
+&lt;p&gt;To develop a library of traditional machine learning algorithms based on &lt;a href=&quot;https://www.tensorflow.org/swift&quot;&gt;Swift for TensorFlow&lt;/a&gt;. &lt;a href=&quot;https://www.tensorflow.org/swift&quot;&gt;Swift for TensorFlow&lt;/a&gt; is a next-generation platform for machine learning, incorporating the latest research across machine learning, compilers, differentiable programming, systems design and beyond. Its advantages include seamless integration with a modern general-purpose language, allowing for more dynamic and sophisticated models. The defined task was to create a library containing traditional machine learning algorithms.&lt;/p&gt;
+
+&lt;p&gt;In a collaborative effort with Victor Antony(GSoC student) and GSoC mentors &lt;a href=&quot;https://twitter.com/dancherp&quot;&gt;Dan Zheng&lt;/a&gt;, &lt;a href=&quot;https://twitter.com/rxwei&quot;&gt;Richard Wei&lt;/a&gt; and &lt;a href=&quot;https://twitter.com/DynamicWebPaige&quot;&gt;Paige Bailey&lt;/a&gt;, we have created a machine learning library based on Swift for TensorFlow - &lt;a href=&quot;https://github.com/param087/swiftML&quot;&gt;swiftML&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;community-bondingperiod&quot;&gt;Community bonding period:&lt;/h2&gt;
+&lt;p&gt;I learned about Swift Package manager, &lt;a href=&quot;https://www.tensorflow.org/swift&quot;&gt;Swift for TensorFlow&lt;/a&gt; project and Google’s Swift coding style. I got an insight about the Swift For TensorFlow’s Tensor, different operations on Tensor, Raw TensorFlow operations and integration with a modern general-purpose language. It helped me in writing mathematical operations and implementing overall algorithms.&lt;/p&gt;
+
+&lt;h2 id=&quot;first-codingphase&quot;&gt;First coding phase:&lt;/h2&gt;
+&lt;p&gt;In the first coding phase, I have implemented &lt;code class=&quot;highlighter-rouge&quot;&gt;linear regression&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;logistic regression&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;K-means clustering&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;K nearest neighbors classifier and regressor&lt;/code&gt;. Along with this, I have implemented different helper tensor operation are &lt;code class=&quot;highlighter-rouge&quot;&gt;pseudoinverse of the matrix&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;euclidean distance&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;minkowski distance&lt;/code&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Linear Regression&lt;/code&gt; implemented using two different methods singular value decomposition and gradient descent.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Logistic Regression&lt;/code&gt; implementation is based on the sigmoid function of the dependent variable. In the multiclass case, the training algorithm uses the one-vs-rest (OvR) scheme.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;K-means clustering&lt;/code&gt; algorithms along with &lt;code class=&quot;highlighter-rouge&quot;&gt;random&lt;/code&gt; initialization of centroids supports &lt;code class=&quot;highlighter-rouge&quot;&gt;Kmeans++&lt;/code&gt; - Heuristic Initialization of centroids for better performance.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;K nearest neighbors&lt;/code&gt; classifier classify based on k-nearest neighbors vote, K nearest neighbors regressor predicts based on local interpolation of the targets nearest to neighbors in the training set and K nearest neighbors classifier and regressor both supports two weight functions used in the prediction are &lt;code class=&quot;highlighter-rouge&quot;&gt;uniform&lt;/code&gt; - All points in each neighborhood are weighted equally and &lt;code class=&quot;highlighter-rouge&quot;&gt;distance&lt;/code&gt; - weight points by the inverse of their distance.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;second-codingphase&quot;&gt;Second coding phase:&lt;/h2&gt;
+&lt;p&gt;In the second coding phase, I have implemented &lt;code class=&quot;highlighter-rouge&quot;&gt;principal component analysis&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;bernoulli naive bayes&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;multinomial naive bayes&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;gaussian naive bayes&lt;/code&gt;. Along with this, I have implemented a helper tensor operation to compute the determinant of &lt;code class=&quot;highlighter-rouge&quot;&gt;singular vector decomposition (SVD)&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Principal component analysis&lt;/code&gt; implementation contains SVD based implementation along with Minka’s MLE implementation to guess the component dimension if the component count is not provided.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Multinomial naive bayes&lt;/code&gt; classifier is suitable for classification with discrete features (e.g., word counts for text classification). The multinomial distribution normally requires integer feature counts.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Bernoulli naive bayes&lt;/code&gt; classifier is suitable for discrete data. The difference is that while Multinomial naive bayes works with occurrence counts, Bernoulli naive bayes is designed for binary features.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Gaussian naive bayes&lt;/code&gt; classifier is suitable for continuous variables.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;third-codingphase&quot;&gt;Third coding phase:&lt;/h2&gt;
+&lt;p&gt;The major part of this period was to avoid memory leaks and making design safe, documenting the code, creating end to end example notebooks.&lt;/p&gt;
+
+&lt;h2 id=&quot;next-step&quot;&gt;Next step:&lt;/h2&gt;
+&lt;p&gt;The &lt;a href=&quot;https://github.com/param087/swiftML&quot;&gt;swiftML&lt;/a&gt; project will be continued on improvements and hoping to become a &lt;a href=&quot;https://scikit-learn.org/&quot;&gt;scikit-learn&lt;/a&gt; for Swift.&lt;/p&gt;
+
+&lt;h2 id=&quot;acknowledgment&quot;&gt;Acknowledgment:&lt;/h2&gt;
+&lt;p&gt;I would like to acknowledge and extend my heartfelt gratitude to my mentors &lt;a href=&quot;https://twitter.com/dancherp&quot;&gt;Dan Zheng&lt;/a&gt;, &lt;a href=&quot;https://twitter.com/rxwei&quot;&gt;Richard Wei&lt;/a&gt; and &lt;a href=&quot;https://twitter.com/DynamicWebPaige&quot;&gt;Paige Bailey&lt;/a&gt; for guiding me throughout the development process. It is great to be a part of the &lt;a href=&quot;https://www.tensorflow.org/&quot;&gt;TensorFlow&lt;/a&gt; team.
+I would also like to Google Summer of Code for providing me this opportunity and giving me a chance to work with TensorFlow.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Project Link: The &lt;a href=&quot;https://github.com/param087/swiftML&quot;&gt;swiftML&lt;/a&gt; project repository contains all the GSoC 2019 work and current developments: &lt;a href=&quot;https://github.com/param087/swiftML&quot;&gt;swiftML&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;End-to-end examples - &lt;a href=&quot;https://github.com/param087/swiftML/tree/master/Notebooks&quot;&gt;https://github.com/param087/swiftML/tree/master/Notebooks&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Following are the merged PRs - (dates differ from the actual coding period timeline as the changes were merged into above repo later than their actual implementation)
+    &lt;ul&gt;
+      &lt;li&gt;Linear Regression - &lt;a href=&quot;https://github.com/param087/swiftML/pull/5&quot;&gt;5&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;Logistic Regression - &lt;a href=&quot;https://github.com/param087/swiftML/pull/7&quot;&gt;7&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;KMeans Clustering - &lt;a href=&quot;https://github.com/param087/swiftML/pull/9&quot;&gt;9&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;K Nearest Neighbors classifier and regressor - &lt;a href=&quot;https://github.com/param087/swiftML/pull/11&quot;&gt;11&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;Principal Component Analysis - &lt;a href=&quot;https://github.com/param087/swiftML/pull/15&quot;&gt;15&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;Bernoulli, Multinomial and Gaussian Naive Bayes - &lt;a href=&quot;https://github.com/param087/swiftML/pull/13&quot;&gt;13&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Param Bhavsar</name><email>bhavsarparam086@gmail.com</email></author><summary type="html">A library of traditional machine learning algorithms based on Swift for TensorFlow.</summary></entry></feed>

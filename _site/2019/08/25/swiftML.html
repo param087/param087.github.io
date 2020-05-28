@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>TensorFlow GSoC’19: Swift library for Machine Learning | Param Bhavsar</title>
+<meta name="generator" content="Jekyll v4.0.1" />
+<meta property="og:title" content="TensorFlow GSoC’19: Swift library for Machine Learning" />
+<meta name="author" content="Param Bhavsar" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A library of traditional machine learning algorithms based on Swift for TensorFlow." />
+<meta property="og:description" content="A library of traditional machine learning algorithms based on Swift for TensorFlow." />
+<link rel="canonical" href="http://localhost:4000/2019/08/25/swiftML.html" />
+<meta property="og:url" content="http://localhost:4000/2019/08/25/swiftML.html" />
+<meta property="og:site_name" content="Param Bhavsar" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-08-25T00:00:00+05:30" />
+<script type="application/ld+json">
+{"headline":"TensorFlow GSoC’19: Swift library for Machine Learning","dateModified":"2019-08-25T00:00:00+05:30","datePublished":"2019-08-25T00:00:00+05:30","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2019/08/25/swiftML.html"},"url":"http://localhost:4000/2019/08/25/swiftML.html","author":{"@type":"Person","name":"Param Bhavsar"},"description":"A library of traditional machine learning algorithms based on Swift for TensorFlow.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Param Bhavsar" /><script async src="https://www.googletagmanager.com/gtag/js?id=G-MY6WRJLD2Z"></script>
+<script>
+  
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MY6WRJLD2Z');
+</script>
+
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Param Bhavsar</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="https://scholar.google.com/citations?user=KeQrY7AAAAAJ&hl=en">Publications</a><a class="page-link" href="/assets/param_bhavsar.pdf">Resume</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">TensorFlow | GSoC’19: Swift library for Machine Learning</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2019-08-25T00:00:00+05:30" itemprop="datePublished">
+        Aug 25, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><img src="/assets/images/GSoC-logo-horizontal.svg" alt="GSoC" />
+<img src="/assets/images/tf_logo_social.png" alt="TensrFlow" /></p>
+<h2 id="task">Task</h2>
+<p>To develop a library of traditional machine learning algorithms based on <a href="https://www.tensorflow.org/swift">Swift for TensorFlow</a>. <a href="https://www.tensorflow.org/swift">Swift for TensorFlow</a> is a next-generation platform for machine learning, incorporating the latest research across machine learning, compilers, differentiable programming, systems design and beyond. Its advantages include seamless integration with a modern general-purpose language, allowing for more dynamic and sophisticated models. The defined task was to create a library containing traditional machine learning algorithms.</p>
+
+<p>In a collaborative effort with Victor Antony(GSoC student) and GSoC mentors <a href="https://twitter.com/dancherp">Dan Zheng</a>, <a href="https://twitter.com/rxwei">Richard Wei</a> and <a href="https://twitter.com/DynamicWebPaige">Paige Bailey</a>, we have created a machine learning library based on Swift for TensorFlow - <a href="https://github.com/param087/swiftML">swiftML</a>.</p>
+
+<h2 id="community-bondingperiod">Community bonding period:</h2>
+<p>I learned about Swift Package manager, <a href="https://www.tensorflow.org/swift">Swift for TensorFlow</a> project and Google’s Swift coding style. I got an insight about the Swift For TensorFlow’s Tensor, different operations on Tensor, Raw TensorFlow operations and integration with a modern general-purpose language. It helped me in writing mathematical operations and implementing overall algorithms.</p>
+
+<h2 id="first-codingphase">First coding phase:</h2>
+<p>In the first coding phase, I have implemented <code class="highlighter-rouge">linear regression</code>, <code class="highlighter-rouge">logistic regression</code>, <code class="highlighter-rouge">K-means clustering</code>, <code class="highlighter-rouge">K nearest neighbors classifier and regressor</code>. Along with this, I have implemented different helper tensor operation are <code class="highlighter-rouge">pseudoinverse of the matrix</code>, <code class="highlighter-rouge">euclidean distance</code> and <code class="highlighter-rouge">minkowski distance</code>.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">Linear Regression</code> implemented using two different methods singular value decomposition and gradient descent.</li>
+  <li><code class="highlighter-rouge">Logistic Regression</code> implementation is based on the sigmoid function of the dependent variable. In the multiclass case, the training algorithm uses the one-vs-rest (OvR) scheme.</li>
+  <li><code class="highlighter-rouge">K-means clustering</code> algorithms along with <code class="highlighter-rouge">random</code> initialization of centroids supports <code class="highlighter-rouge">Kmeans++</code> - Heuristic Initialization of centroids for better performance.</li>
+  <li><code class="highlighter-rouge">K nearest neighbors</code> classifier classify based on k-nearest neighbors vote, K nearest neighbors regressor predicts based on local interpolation of the targets nearest to neighbors in the training set and K nearest neighbors classifier and regressor both supports two weight functions used in the prediction are <code class="highlighter-rouge">uniform</code> - All points in each neighborhood are weighted equally and <code class="highlighter-rouge">distance</code> - weight points by the inverse of their distance.</li>
+</ul>
+
+<h2 id="second-codingphase">Second coding phase:</h2>
+<p>In the second coding phase, I have implemented <code class="highlighter-rouge">principal component analysis</code>, <code class="highlighter-rouge">bernoulli naive bayes</code>, <code class="highlighter-rouge">multinomial naive bayes</code> and <code class="highlighter-rouge">gaussian naive bayes</code>. Along with this, I have implemented a helper tensor operation to compute the determinant of <code class="highlighter-rouge">singular vector decomposition (SVD)</code>.</p>
+<ul>
+  <li><code class="highlighter-rouge">Principal component analysis</code> implementation contains SVD based implementation along with Minka’s MLE implementation to guess the component dimension if the component count is not provided.</li>
+  <li><code class="highlighter-rouge">Multinomial naive bayes</code> classifier is suitable for classification with discrete features (e.g., word counts for text classification). The multinomial distribution normally requires integer feature counts.</li>
+  <li><code class="highlighter-rouge">Bernoulli naive bayes</code> classifier is suitable for discrete data. The difference is that while Multinomial naive bayes works with occurrence counts, Bernoulli naive bayes is designed for binary features.</li>
+  <li><code class="highlighter-rouge">Gaussian naive bayes</code> classifier is suitable for continuous variables.</li>
+</ul>
+
+<h2 id="third-codingphase">Third coding phase:</h2>
+<p>The major part of this period was to avoid memory leaks and making design safe, documenting the code, creating end to end example notebooks.</p>
+
+<h2 id="next-step">Next step:</h2>
+<p>The <a href="https://github.com/param087/swiftML">swiftML</a> project will be continued on improvements and hoping to become a <a href="https://scikit-learn.org/">scikit-learn</a> for Swift.</p>
+
+<h2 id="acknowledgment">Acknowledgment:</h2>
+<p>I would like to acknowledge and extend my heartfelt gratitude to my mentors <a href="https://twitter.com/dancherp">Dan Zheng</a>, <a href="https://twitter.com/rxwei">Richard Wei</a> and <a href="https://twitter.com/DynamicWebPaige">Paige Bailey</a> for guiding me throughout the development process. It is great to be a part of the <a href="https://www.tensorflow.org/">TensorFlow</a> team.
+I would also like to Google Summer of Code for providing me this opportunity and giving me a chance to work with TensorFlow.</p>
+<ul>
+  <li>Project Link: The <a href="https://github.com/param087/swiftML">swiftML</a> project repository contains all the GSoC 2019 work and current developments: <a href="https://github.com/param087/swiftML">swiftML</a></li>
+  <li>End-to-end examples - <a href="https://github.com/param087/swiftML/tree/master/Notebooks">https://github.com/param087/swiftML/tree/master/Notebooks</a></li>
+  <li>Following are the merged PRs - (dates differ from the actual coding period timeline as the changes were merged into above repo later than their actual implementation)
+    <ul>
+      <li>Linear Regression - <a href="https://github.com/param087/swiftML/pull/5">5</a></li>
+      <li>Logistic Regression - <a href="https://github.com/param087/swiftML/pull/7">7</a></li>
+      <li>KMeans Clustering - <a href="https://github.com/param087/swiftML/pull/9">9</a></li>
+      <li>K Nearest Neighbors classifier and regressor - <a href="https://github.com/param087/swiftML/pull/11">11</a></li>
+      <li>Principal Component Analysis - <a href="https://github.com/param087/swiftML/pull/15">15</a></li>
+      <li>Bernoulli, Multinomial and Gaussian Naive Bayes - <a href="https://github.com/param087/swiftML/pull/13">13</a></li>
+    </ul>
+  </li>
+</ul>
+
+  </div><div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+      this.page.url = 'http://localhost:4000/2019/08/25/swiftML.html';
+      this.page.identifier = 'http://localhost:4000/2019/08/25/swiftML.html';
+    };
+
+    (function() {
+      var d = document, s = d.createElement('script');
+
+      s.src = 'https://param087-github-io.disqus.com/embed.js';
+
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript><a class="u-url" href="/2019/08/25/swiftML.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col-1">
+        <!--<p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>-->
+        <ul class="contact-list">
+          <li class="p-name">Param Bhavsar</li>
+          <li><a class="u-email" href="mailto:bhavsarparam086@gmail.com">bhavsarparam086@gmail.com</a></li>
+        </ul>
+      </div>
+      <div class="footer-col-2">
+        <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/param087" title="param087"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg><span class="username">param087</span></a></li><li><a rel="me" href="https://www.linkedin.com/in/param-bhavsar" title="param-bhavsar"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg><span class="username">param-bhavsar</span></a></li><li><a rel="me" href="https://twitter.com/param087" title="param087"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg><span class="username">param087</span></a></li></ul>
+</div>
+      </div>
+      <div class="footer-col-3">
+        Artificial intelligence and nlp
+      </div>
+    </div>
+
+    <!--<div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/param087" title="param087"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg><span class="username">param087</span></a></li><li><a rel="me" href="https://www.linkedin.com/in/param-bhavsar" title="param-bhavsar"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg><span class="username">param-bhavsar</span></a></li><li><a rel="me" href="https://twitter.com/param087" title="param087"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg><span class="username">param087</span></a></li></ul>
+</div>-->
+
+  </div>
+
+</footer>
+</body>
+
+</html>
