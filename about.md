@@ -27,4 +27,4 @@ Before that, I was a student developer at [TensoFlow](https://www.tensorflow.org
 
 Before that, I was a project intern in [BMC Software](https://www.bmcsoftware.in/), where we develop the blockchain-based PoC application for the license and API tracking of customers.
 
-I am interested in developing better artificial intelligence and have working experience in computer vision and NLP. If you're interested in collaborating email me at [bhavsarparam086@gmail.com](bhavsarparam086@gmail.com)
+I am interested in developing better artificial intelligence and have working experience in computer vision and NLP. If you're interested in collaborating email me at [bhavsarparam087@gmail.com](bhavsarparam087@gmail.com)
