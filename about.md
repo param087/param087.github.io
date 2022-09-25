@@ -26,6 +26,6 @@ I worked as a senior software engineer in <a href= "https://hsbc.com/">HSBC</a>'
 
 Before that, I was a student developer at [TensoFlow](https://www.tensorflow.org/), Where I worked on building a traditional machine learning library in Swift Lang [swiftML](https://github.com/param087/swiftML).
 
-Before that, I was a project intern in [BMC Software](https://www.bmcsoftware.in/), where we develop the blockchain-based application for the license tracking and compliance management.
+Before that, I was a project intern in [BMC Software](https://www.bmcsoftware.in/), where we develop the blockchain-based service for the license tracking and compliance management.
 
 I am interested in developing general artificial intelligence and have working experience in computer vision and NLP. If you're interested in collaborating email me at bhavsar.35 at osu dot edu.
