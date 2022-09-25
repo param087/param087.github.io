@@ -20,11 +20,12 @@ permalink: /about/
 
 <br>
 
+Hi! I am pursuing a master's in Computer Science at The [Ohio State University](https://www.osu.edu/) with a specialization in Artificial Intelligence and Software Development. I am passionate about applied machine learning, natural language processing, and scalable platforms.
 
-Hi! I am currently working as a software engineer in [HSBC](https://hsbc.com/)'s [Commercial Banking](https://www.hsbc.com/who-we-are/our-businesses-and-customers/commercial-banking) department, where I am a part of the digital transformation team. Here we are making a set of applications on which customers can do their transactions in bulks, track them and authorized them if need.
+I worked as a senior software engineer in <a href= "https://hsbc.com/">HSBC</a>'s <a href= "https://www.hsbc.com/who-we-are/our-businesses-and-customers/commercial-banking">Commercial Banking</a> department, where I was a part of the digital transformation team and responsible for the development of a set of applications on which customers can make their payments in bulks, track them and authorized them if need.</p>
 
 Before that, I was a student developer at [TensoFlow](https://www.tensorflow.org/), Where I worked on building a traditional machine learning library in Swift Lang [swiftML](https://github.com/param087/swiftML).
 
-Before that, I was a project intern in [BMC Software](https://www.bmcsoftware.in/), where we develop the blockchain-based PoC application for the license and API tracking of customers.
+Before that, I was a project intern in [BMC Software](https://www.bmcsoftware.in/), where we develop the blockchain-based application for the license tracking and compliance management.
 
-I am interested in developing better artificial intelligence and have working experience in computer vision and NLP. If you're interested in collaborating email me at [bhavsarparam087@gmail.com](bhavsarparam087@gmail.com)
+I am interested in developing general artificial intelligence and have working experience in computer vision and NLP. If you're interested in collaborating email me at bhavsar.35 at osu dot edu.
