@@ -22,7 +22,7 @@ permalink: /about/
 
 Hi! I am pursuing a master's in Computer Science at The [Ohio State University](https://www.osu.edu/) with a specialization in Artificial Intelligence and Software Development. I am passionate about applied machine learning, natural language processing, and scalable platforms.
 
-I worked as a senior software engineer in <a href= "https://hsbc.com/">HSBC</a>'s <a href= "https://www.hsbc.com/who-we-are/our-businesses-and-customers/commercial-banking">Commercial Banking</a> department, where I was a part of the digital transformation team and responsible for the development of a set of applications on which customers can make their payments in bulks, track them and authorized them if need.</p>
+I worked as a senior software engineer in [HSBC](https://hsbc.com/")'s [Commercial Banking](https://www.hsbc.com/who-we-are/our-businesses-and-customers/commercial-banking) department, where I was a part of the digital transformation team and responsible for the development of a set of applications on which customers can make their payments in bulks, track them and authorized them if need.
 
 Before that, I was a student developer at [TensoFlow](https://www.tensorflow.org/), Where I worked on building a traditional machine learning library in Swift Lang [swiftML](https://github.com/param087/swiftML).
 
