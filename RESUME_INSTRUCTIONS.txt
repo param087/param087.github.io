@@ -1,0 +1,50 @@
+📄 RESUME PDF INSTRUCTIONS
+==========================
+
+To enable the resume download functionality on your portfolio:
+
+1. Create or export your resume as a PDF file
+2. Name the file: resume.pdf
+3. Place it in the root directory of this project (same folder as index.html)
+
+Your file structure should look like:
+Porfolio/
+├── index.html
+├── resume.pdf  <-- Add your resume here
+├── README.md
+└── assets/
+    └── js/
+        └── main.js
+
+Alternative Approach:
+---------------------
+If you want to use a different filename (e.g., "Param_Bhavsar_Resume.pdf"):
+
+1. Save your resume with your preferred name
+2. Update the link in index.html:
+   
+   Find:
+   <a href="resume.pdf" download>
+   
+   Change to:
+   <a href="Param_Bhavsar_Resume.pdf" download>
+
+Tips for Creating Your Resume:
+-------------------------------
+- Keep it to 1-2 pages
+- Use a professional template
+- Include your contact information
+- Highlight your 4+ years of experience
+- List key skills and technologies
+- Include notable projects and achievements
+- Proofread carefully
+
+Online Resume Tools:
+--------------------
+- Canva (canva.com)
+- Resume.io (resume.io)
+- Zety (zety.com)
+- Google Docs (with templates)
+- Microsoft Word (with templates)
+
+Once you add your resume.pdf file, you can delete this instruction file.
