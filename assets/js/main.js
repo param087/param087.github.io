@@ -1,10 +1,6 @@
 /* main.js — entry point for the site.
- * Wires up nav, scroll-spy, reveal animations, theme toggle, contact form,
- * and bootstraps the Live Lab + swarm modules.
+ * Wires up nav, scroll-spy, reveal animations, theme toggle, and contact form.
  */
-
-import { initSwarm } from "./swarm.js?v=3";
-import { initLiveLab } from "./live-lab.js?v=9";
 
 /* Theme: default dark, optional light toggle, persisted in localStorage. */
 (function initTheme() {
@@ -96,8 +92,4 @@ document.addEventListener("DOMContentLoaded", () => {
   /* Year in footer */
   const yr = document.getElementById("footer-year");
   if (yr) yr.textContent = new Date().getFullYear();
-
-  /* Live Lab + swarm */
-  initSwarm();
-  initLiveLab();
 });

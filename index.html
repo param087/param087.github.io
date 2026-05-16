@@ -4,17 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Param Manoj Bhavsar — AI-augmented Software Engineer</title>
-    <meta name="description" content="Param Manoj Bhavsar — Software engineer building high-performance distributed systems and AI-augmented developer tools. Live Lab streams the AI agents currently working with me.">
+    <meta name="description" content="Param Manoj Bhavsar — Software engineer building high-performance distributed systems and AI-augmented developer tools.">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Param Manoj Bhavsar — AI-augmented Software Engineer">
-    <meta property="og:description" content="Distributed systems engineer with a live activity stream from the AI agents working alongside me.">
+    <meta property="og:description" content="Distributed systems engineer building high-performance, event-driven systems.">
     <meta property="og:url" content="https://param087.github.io/">
-
-    <!-- Agent stream config -->
-    <!-- After deploying the Worker, replace the content with the deployed URL (e.g. https://agent-stream.<acct>.workers.dev). -->
-    <meta name="agent-stream-url" content="https://agent-stream.param087.workers.dev">
 
     <!-- Theme -->
     <meta name="theme-color" content="#0a0a0c">
@@ -32,11 +28,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="assets/css/tokens.css">
-    <link rel="stylesheet" href="assets/css/live-lab.css?v=9">
     <link rel="stylesheet" href="assets/css/site.css">
-
-    <!-- JSON Feed alternate (resolves after Worker deploy) -->
-    <link rel="alternate" type="application/feed+json" title="Agent activity feed" href="REPLACE_WITH_DEPLOYED_WORKER_URL/feed.json">
 </head>
 <body>
 
@@ -48,7 +40,6 @@
             <span>param.bhavsar</span>
         </a>
         <nav class="nav__links" aria-label="Primary">
-            <a href="#live-lab">Live Lab</a>
             <a href="#about">About</a>
             <a href="#resume">Resume</a>
             <a href="#research">Research</a>
@@ -69,19 +60,6 @@
     </div>
 </header>
 
-<!-- =============== PULSE BANNER =============== -->
-<div class="pulse-banner" aria-label="Live agent activity ticker">
-    <span class="pulse-banner__label">
-        <span class="chip chip--live"><span class="dot"></span>live</span>
-        agents:
-    </span>
-    <div class="pulse-banner__marquee" aria-hidden="false">
-        <div class="pulse-banner__track" data-pulse-banner-track aria-live="polite" aria-atomic="false">
-            <span class="pulse-banner__item">connecting…</span>
-        </div>
-    </div>
-</div>
-
 <main id="main">
 
 <!-- =============== HERO =============== -->
@@ -99,83 +77,16 @@
             <p class="lede">
                 Software engineer with 4+ years shipping high-performance, event-driven
                 systems — scaled HSBC payments from 95K to 410K req/s, ran fraud detection
-                at >5K TPS, and now build AI-driven testing and IoT telemetry at Eaton.
-                Below, a live stream of the coding agents working with me right now.
+                at &gt;5K TPS, and now build AI-driven testing and IoT telemetry at Eaton.
             </p>
             <div class="hero__cta">
-                <a href="#live-lab" class="btn btn--primary"><i class="fas fa-bolt"></i> See live activity</a>
-                <a href="#resume" class="btn"><i class="fas fa-briefcase"></i> View experience</a>
+                <a href="#resume" class="btn btn--primary"><i class="fas fa-briefcase"></i> View experience</a>
                 <a href="https://github.com/param087" target="_blank" rel="noopener" class="btn btn--ghost"><i class="fab fa-github"></i> GitHub</a>
-            </div>
-
-            <div class="stat-strip" role="list" aria-label="Live agent activity stats">
-                <div class="stat" role="listitem">
-                    <div class="stat__num" id="stat-today" data-value="0">0</div>
-                    <div class="stat__label">Agent events today</div>
-                </div>
-                <div class="stat" role="listitem">
-                    <div class="stat__num" id="stat-7d" data-value="0">0</div>
-                    <div class="stat__label">Last 7 days</div>
-                </div>
-                <div class="stat" role="listitem">
-                    <div class="stat__num" id="stat-30d" data-value="0">0</div>
-                    <div class="stat__label">Last 30 days</div>
-                </div>
-                <div class="stat" role="listitem">
-                    <div class="stat__num">6</div>
-                    <div class="stat__label">Agents in rotation</div>
-                </div>
             </div>
         </div>
 
         <div class="hero__visual" data-reveal>
-            <canvas id="hero-swarm" class="hero__canvas" aria-hidden="true"></canvas>
             <img src="profile.jpg" alt="Param Manoj Bhavsar" class="hero__avatar">
-        </div>
-    </div>
-</section>
-
-<!-- =============== LIVE LAB =============== -->
-<section id="live-lab" class="section">
-    <div class="container">
-        <header style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:var(--sp-4); margin-bottom: var(--sp-5);" data-reveal>
-            <div>
-                <span class="eyebrow">Live Lab</span>
-                <h2 class="h-section">The agents working with me, in real time</h2>
-                <p class="lede" style="max-width: 60ch;">
-                    Every time an AI coding agent (OpenCode, Claude Code, Copilot, Codex, …)
-                    helps me with something, it pings a small Cloudflare Worker. Below is
-                    that stream — events, stats, and an hour-of-week rhythm grid.
-                </p>
-            </div>
-            <div data-lab-tabs class="tabs" role="tablist" aria-label="Live Lab views">
-                <button role="tab" class="tab" aria-selected="true" aria-controls="lab-stream-panel" id="tab-stream">Stream</button>
-                <button role="tab" class="tab" aria-selected="false" aria-controls="lab-stats-panel" id="tab-stats">Stats</button>
-                <button role="tab" class="tab" aria-selected="false" aria-controls="lab-rhythm-panel" id="tab-rhythm">Rhythm</button>
-            </div>
-        </header>
-
-        <div class="lab-tabs__panels">
-            <div role="tabpanel" id="lab-stream-panel" class="lab-panel" aria-labelledby="tab-stream">
-                <div id="activity-stream" class="stream" aria-live="polite">
-                    <div class="stream-empty">Waiting for agents to report in…</div>
-                </div>
-            </div>
-            <div role="tabpanel" id="lab-stats-panel" class="lab-panel" aria-labelledby="tab-stats" hidden>
-                <div id="lab-stats"><div class="stream-empty">Loading stats…</div></div>
-            </div>
-            <div role="tabpanel" id="lab-rhythm-panel" class="lab-panel" aria-labelledby="tab-rhythm" hidden>
-                <div id="lab-rhythm"><div class="stream-empty">Loading rhythm…</div></div>
-            </div>
-        </div>
-
-        <!-- AI Stack cards -->
-        <div style="margin-top: var(--sp-8);" data-reveal>
-            <span class="eyebrow">AI stack in rotation</span>
-            <h3 class="h-section" style="font-size: var(--fs-xl);">Who's on the team this month</h3>
-            <div id="stack-grid" class="stack-grid" style="margin-top: var(--sp-5);">
-                <div class="stream-empty">Agents will appear here as they ping in…</div>
-            </div>
         </div>
     </div>
 </section>
@@ -209,9 +120,8 @@
                 cutting authoring time 60%.</p>
 
                 <p style="color: var(--text-2)">Lately, the most interesting part of my workflow is how much of it runs
-                through AI coding agents. So I built a live stream of that activity — see
-                <a href="#live-lab">Live Lab</a> above — because the future of "what does a software engineer do"
-                is going to look very different, and I'd rather show it than describe it.</p>
+                through AI coding agents — and I think the future of "what does a software engineer do"
+                is going to look very different.</p>
 
                 <div class="card" style="margin-top: var(--sp-5);">
                     <h4 style="margin:0 0 var(--sp-3); color: var(--text-0); font-size: var(--fs-md);">Core focus</h4>
@@ -517,13 +427,6 @@
                         <a href="https://x.com/param087" target="_blank" rel="noopener">x.com/param087</a>
                     </div>
                 </div>
-                <div class="contact-row">
-                    <i class="fas fa-rss" aria-hidden="true"></i>
-                    <div>
-                        <strong>Agent activity feed</strong>
-                        <a href="REPLACE_WITH_DEPLOYED_WORKER_URL/feed.json">JSON Feed (subscribe)</a>
-                    </div>
-                </div>
             </div>
 
             <form id="contact-form" class="contact-form card" novalidate>
@@ -558,11 +461,8 @@
         <div>
             <strong style="color: var(--text-1);">Param Manoj Bhavsar</strong>
             · <span>© <span id="footer-year">2026</span></span>
-            · <span>Built with Cloudflare Workers + a small swarm of agents.</span>
         </div>
         <div class="footer__links">
-            <a href="#live-lab">Live Lab</a>
-            <a href="REPLACE_WITH_DEPLOYED_WORKER_URL/feed.json">JSON Feed</a>
             <a href="https://github.com/param087" target="_blank" rel="noopener">Source</a>
         </div>
         <div class="footer__socials">
