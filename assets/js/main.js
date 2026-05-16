@@ -4,7 +4,7 @@
  */
 
 import { initSwarm } from "./swarm.js?v=3";
-import { initLiveLab } from "./live-lab.js?v=8";
+import { initLiveLab } from "./live-lab.js?v=9";
 
 /* Theme: default dark, optional light toggle, persisted in localStorage. */
 (function initTheme() {

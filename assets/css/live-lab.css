@@ -223,28 +223,57 @@
   font-size: var(--fs-sm);
 }
 
-/* Heatmap */
-.heatmap {
+/* Hour-of-week rhythm grid (7 days × 24 hours, UTC) */
+.hour-of-week {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: 12px;
-  gap: 3px;
+  grid-template-columns: 1fr;
+  gap: 4px;
   padding: var(--sp-4);
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
+  overflow-x: auto;
 }
-.heatmap__cell {
-  width: 100%;
-  height: 100%;
+.how__ticks,
+.how__row {
+  display: grid;
+  grid-template-columns: 36px repeat(24, minmax(14px, 1fr));
+  gap: 3px;
+  align-items: center;
+}
+.how__corner { display: block; }
+.how__tick {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  text-align: center;
+  line-height: 1;
+}
+.how__label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  text-align: right;
+  padding-right: var(--sp-2);
+}
+.how__cell {
+  aspect-ratio: 1 / 1;
+  min-height: 14px;
   background: var(--bg-3);
   border-radius: 2px;
   transition: background var(--t-fast);
 }
-.heatmap__cell[data-l="1"] { background: rgba(34,211,238,0.18); }
-.heatmap__cell[data-l="2"] { background: rgba(34,211,238,0.36); }
-.heatmap__cell[data-l="3"] { background: rgba(34,211,238,0.6); }
-.heatmap__cell[data-l="4"] { background: rgba(34,211,238,0.95); box-shadow: 0 0 6px rgba(34,211,238,0.5); }
+.how__cell[data-l="1"] { background: rgba(34,211,238,0.18); }
+.how__cell[data-l="2"] { background: rgba(34,211,238,0.36); }
+.how__cell[data-l="3"] { background: rgba(34,211,238,0.6); }
+.how__cell[data-l="4"] { background: rgba(34,211,238,0.95); box-shadow: 0 0 6px rgba(34,211,238,0.5); }
+.how__caption {
+  margin: var(--sp-3) 0 0;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-align: right;
+}
 
 /* AI Stack grid */
 .stack-grid {

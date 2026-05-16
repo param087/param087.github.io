@@ -32,7 +32,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="assets/css/tokens.css">
-    <link rel="stylesheet" href="assets/css/live-lab.css?v=8">
+    <link rel="stylesheet" href="assets/css/live-lab.css?v=9">
     <link rel="stylesheet" href="assets/css/site.css">
 
     <!-- JSON Feed alternate (resolves after Worker deploy) -->
@@ -145,13 +145,13 @@
                 <p class="lede" style="max-width: 60ch;">
                     Every time an AI coding agent (OpenCode, Claude Code, Copilot, Codex, …)
                     helps me with something, it pings a small Cloudflare Worker. Below is
-                    that stream — events, stats, and an activity heatmap.
+                    that stream — events, stats, and an hour-of-week rhythm grid.
                 </p>
             </div>
             <div data-lab-tabs class="tabs" role="tablist" aria-label="Live Lab views">
                 <button role="tab" class="tab" aria-selected="true" aria-controls="lab-stream-panel" id="tab-stream">Stream</button>
                 <button role="tab" class="tab" aria-selected="false" aria-controls="lab-stats-panel" id="tab-stats">Stats</button>
-                <button role="tab" class="tab" aria-selected="false" aria-controls="lab-heatmap-panel" id="tab-heatmap">Heatmap</button>
+                <button role="tab" class="tab" aria-selected="false" aria-controls="lab-rhythm-panel" id="tab-rhythm">Rhythm</button>
             </div>
         </header>
 
@@ -164,8 +164,8 @@
             <div role="tabpanel" id="lab-stats-panel" class="lab-panel" aria-labelledby="tab-stats" hidden>
                 <div id="lab-stats"><div class="stream-empty">Loading stats…</div></div>
             </div>
-            <div role="tabpanel" id="lab-heatmap-panel" class="lab-panel" aria-labelledby="tab-heatmap" hidden>
-                <div id="lab-heatmap"><div class="stream-empty">Loading heatmap…</div></div>
+            <div role="tabpanel" id="lab-rhythm-panel" class="lab-panel" aria-labelledby="tab-rhythm" hidden>
+                <div id="lab-rhythm"><div class="stream-empty">Loading rhythm…</div></div>
             </div>
         </div>
 
@@ -574,6 +574,6 @@
     </div>
 </footer>
 
-<script type="module" src="assets/js/main.js?v=8"></script>
+<script type="module" src="assets/js/main.js?v=9"></script>
 </body>
 </html>

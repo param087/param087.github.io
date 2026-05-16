@@ -1,4 +1,4 @@
-/* live-lab.js — renders the activity stream, pulse banner, stats, heatmap.
+/* live-lab.js — renders the activity stream, pulse banner, stats, rhythm grid.
  *
  * Event payload shape:
  *   agent, model, ts, duration_ms, tokens, type (9-value enum),
@@ -259,28 +259,70 @@ function renderStatsInto(container, stats) {
   container.replaceChildren(eventTiles, taskBars, agentBars);
 }
 
-function renderHeatmapInto(container, stats) {
-  const raw = stats?.heatmap ?? [];
-  const heat = raw.map(d => ({
-    count: d.count ?? d.c ?? 0,
-    date: d.date ?? new Date((d.day ?? 0) * 86_400_000).toISOString().slice(0, 10),
-  }));
-  if (!heat.length) {
-    container.replaceChildren(el("div", { class: "stream-empty" }, "Heatmap will populate as agents check in."));
+/* ---------- hour-of-week rhythm grid ------------------------------------- *
+ * Server emits stats.hour_of_week: [{ dow, hour, c }, …]  with dow 0=Sun..6=Sat
+ * (SQLite strftime('%w')). We re-map to Mon-first rows for display. All
+ * buckets are UTC; the caption makes that explicit.                         */
+
+const RHYTHM_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+// dow (Sun=0..Sat=6) → row index in Mon-first layout
+const DOW_TO_ROW = [6, 0, 1, 2, 3, 4, 5];
+
+function renderHourOfWeekInto(container, stats) {
+  const raw = Array.isArray(stats?.hour_of_week) ? stats.hour_of_week : [];
+  if (!raw.length) {
+    container.replaceChildren(
+      el("div", { class: "stream-empty" }, "Rhythm grid will populate as agents check in.")
+    );
     return;
   }
-  const max = Math.max(1, ...heat.map(d => d.count));
-  const cells = heat.map(d => {
-    const lvl = d.count === 0 ? 0 : Math.min(4, Math.ceil(d.count / max * 4));
-    return el("div", { class: "heatmap__cell", "data-l": String(lvl), title: `${d.date}: ${d.count}` });
+
+  // Bucket into a 7×24 dense matrix.
+  const matrix = Array.from({ length: 7 }, () => Array(24).fill(0));
+  let max = 0;
+  for (const { dow, hour, c } of raw) {
+    const r = DOW_TO_ROW[Number(dow)];
+    const h = Number(hour);
+    const n = Number(c) || 0;
+    if (r == null || !Number.isFinite(h) || h < 0 || h > 23) continue;
+    matrix[r][h] = n;
+    if (n > max) max = n;
+  }
+  if (max === 0) {
+    container.replaceChildren(
+      el("div", { class: "stream-empty" }, "Rhythm grid will populate as agents check in.")
+    );
+    return;
+  }
+
+  // Hour tick labels (sparse: 00, 06, 12, 18) along the top.
+  const ticks = el("div", { class: "how__ticks" },
+    el("span", { class: "how__corner" }),
+    ...Array.from({ length: 24 }, (_, h) =>
+      el("span", { class: "how__tick" }, h % 6 === 0 ? String(h).padStart(2, "0") : "")
+    ),
+  );
+
+  const rows = matrix.map((row, ri) => {
+    const cells = row.map((count, h) => {
+      const lvl = count === 0 ? 0 : Math.min(4, Math.ceil(count / max * 4));
+      const label = `${RHYTHM_DAYS[ri]} ${String(h).padStart(2, "0")}:00 UTC — ${count} event${count === 1 ? "" : "s"}`;
+      return el("div", { class: "how__cell", "data-l": String(lvl), title: label });
+    });
+    return el("div", { class: "how__row" },
+      el("span", { class: "how__label" }, RHYTHM_DAYS[ri]),
+      ...cells,
+    );
   });
-  const grid = el("div", { class: "heatmap" }, ...cells);
-  container.replaceChildren(grid);
+
+  const grid = el("div", { class: "hour-of-week" }, ticks, ...rows);
+  const caption = el("p", { class: "how__caption" }, "all times UTC · last 90 days");
+  container.replaceChildren(grid, caption);
 }
 
 /* ---------- tabs ---------------------------------------------------------- */
 
-function wireTabs(tabsRoot) {
+function wireTabs(tabsRoot, onActivate) {
   const tabs = Array.from(tabsRoot.querySelectorAll("[role=tab]"));
   const panels = Array.from(document.querySelectorAll(".lab-panel"));
   const activate = (tab) => {
@@ -288,6 +330,7 @@ function wireTabs(tabsRoot) {
     panels.forEach(p => p.hidden = true);
     const panel = document.getElementById(tab.getAttribute("aria-controls"));
     if (panel) panel.hidden = false;
+    if (typeof onActivate === "function") onActivate(tab.id);
   };
   tabs.forEach((tab, i) => {
     tab.addEventListener("click", () => activate(tab));
@@ -367,9 +410,8 @@ export function initLiveLab() {
   const banner = document.querySelector("[data-pulse-banner-track]");
   const stream = document.getElementById("activity-stream");
   const statsPanel = document.getElementById("lab-stats");
-  const heatPanel = document.getElementById("lab-heatmap");
+  const rhythmPanel = document.getElementById("lab-rhythm");
   const tabsRoot = document.querySelector("[data-lab-tabs]");
-  if (tabsRoot) wireTabs(tabsRoot);
 
   const newIds = new Set();
   const stackGrid = document.getElementById("stack-grid");
@@ -387,13 +429,27 @@ export function initLiveLab() {
   async function refreshStats() {
     const stats = await loadStats(baseUrl);
     if (statsPanel) renderStatsInto(statsPanel, stats);
-    if (heatPanel) renderHeatmapInto(heatPanel, stats);
+    if (rhythmPanel) renderHourOfWeekInto(rhythmPanel, stats);
     if (stats) {
       const byAgentArr = Array.isArray(stats.by_agent) ? stats.by_agent : [];
       if (stackGrid) renderStackInto(stackGrid, byAgentArr);
       updateHeroStats(stats);
     }
   }
+
+  // Always do an initial fetch so the hero counters + stack populate even if
+  // the user never visits the Stats/Rhythm tabs.
   refreshStats();
-  setInterval(refreshStats, 60_000);
+
+  // Cache API serves /stats with a 5-minute TTL; matching the client cadence
+  // keeps us off the origin path entirely between refreshes.
+  setInterval(refreshStats, 300_000);
+
+  // Refresh immediately on tab activation so the user sees fresh numbers when
+  // switching to Stats or Rhythm.
+  if (tabsRoot) {
+    wireTabs(tabsRoot, (tabId) => {
+      if (tabId === "tab-stats" || tabId === "tab-rhythm") refreshStats();
+    });
+  }
 }

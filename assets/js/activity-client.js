@@ -1,6 +1,6 @@
 /* activity-client.js — polls the agent-stream Worker for events.
  * - Reads worker URL from <meta name="agent-stream-url">.
- * - Polls every 20s when visible; pauses when hidden.
+ * - Polls every 30s when visible; pauses when hidden.
  * - Exponential backoff on errors (up to 2 min).
  * - Caches last successful payload in localStorage as fallback.
  * - Publishes a CustomEvent('agent-stream:update', {detail: {events, status}})
@@ -10,7 +10,7 @@
  */
 
 const CACHE_KEY = "agent-stream:last-events";
-const POLL_MS = 20_000;
+const POLL_MS = 30_000;
 const MAX_BACKOFF_MS = 120_000;
 
 function getBaseUrl() {
