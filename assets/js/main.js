@@ -3,8 +3,8 @@
  * and bootstraps the Live Lab + swarm modules.
  */
 
-import { initSwarm } from "./swarm.js";
-import { initLiveLab } from "./live-lab.js";
+import { initSwarm } from "./swarm.js?v=2";
+import { initLiveLab } from "./live-lab.js?v=2";
 
 /* Theme: default dark, optional light toggle, persisted in localStorage. */
 (function initTheme() {
