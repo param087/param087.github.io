@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Now — Param Manoj Bhavsar</title>
+    <meta name="description" content="What I'm working on right now, plus a live feed of the AI agents I'm pairing with.">
+    <meta name="agent-stream-url" content="REPLACE_WITH_DEPLOYED_WORKER_URL">
+    <meta name="theme-color" content="#0a0a0c">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0c'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='Inter,sans-serif' font-size='34' font-weight='700' fill='%23ffffff'%3EP%3C/text%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/tokens.css">
+    <link rel="stylesheet" href="assets/css/live-lab.css">
+    <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<header class="nav">
+    <div class="container nav__inner">
+        <a class="nav__brand" href="/">
+            <span class="dot"></span> param.bhavsar
+        </a>
+        <nav class="nav__links">
+            <a href="/#live-lab">Live Lab</a>
+            <a href="/#about">About</a>
+            <a href="/#resume">Resume</a>
+            <a href="/now.html" class="is-active">Now</a>
+            <a href="/#contact">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<main style="padding-top: calc(var(--nav-h) + var(--sp-7));">
+<section class="section">
+    <div class="container" style="max-width: 760px;">
+        <span class="eyebrow">Now</span>
+        <h1 class="h-display" style="font-size: var(--fs-3xl);">What I'm doing right now</h1>
+        <p class="lede">
+            Inspired by <a href="https://nownownow.com/about" target="_blank" rel="noopener">nownownow.com</a>.
+            Last updated automatically as agents check in.
+        </p>
+
+        <div class="card" style="margin-top: var(--sp-6);">
+            <h2 style="font-size: var(--fs-lg); margin: 0 0 var(--sp-3); color: var(--text-0);">Currently</h2>
+            <ul style="color: var(--text-2); padding-left: 1.1rem; line-height: 1.9;">
+                <li>Software Engineer at <strong>Eaton</strong>, Galesburg MI — IoT telemetry + AI-driven test generation.</li>
+                <li>Building <strong>Live Lab</strong> — the agent activity stream you see below.</li>
+                <li>Exploring <strong>MCP servers</strong> and agentic patterns for personal productivity.</li>
+                <li>Reading: distributed systems literature, agent-architecture papers.</li>
+            </ul>
+        </div>
+
+        <div style="margin-top: var(--sp-7);">
+            <h2 class="h-section" style="font-size: var(--fs-xl);">Live agent activity</h2>
+            <div id="activity-stream" class="stream" style="margin-top: var(--sp-4);" aria-live="polite">
+                <div class="stream-empty">Connecting…</div>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <div><strong style="color:var(--text-1)">Param Manoj Bhavsar</strong> · © <span id="footer-year">2026</span></div>
+        <div class="footer__links">
+            <a href="/">Home</a>
+            <a href="/#live-lab">Live Lab</a>
+        </div>
+    </div>
+</footer>
+
+<script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

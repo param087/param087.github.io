@@ -1,1154 +1,608 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Param Manoj Bhavsar - Software Engineer with 4+ years of experience. Portfolio showcasing projects, research, and technical expertise.">
-    <meta name="keywords" content="Param Manoj Bhavsar, Software Engineer, Portfolio, Web Development, Projects">
-    <meta name="author" content="Param Manoj Bhavsar">
-    <title>Param Manoj Bhavsar - Software Engineer Portfolio</title>
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome for icons -->
+    <title>Param Manoj Bhavsar — AI-augmented Software Engineer</title>
+    <meta name="description" content="Param Manoj Bhavsar — Software engineer building high-performance distributed systems and AI-augmented developer tools. Live Lab streams the AI agents currently working with me.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Param Manoj Bhavsar — AI-augmented Software Engineer">
+    <meta property="og:description" content="Distributed systems engineer with a live activity stream from the AI agents working alongside me.">
+    <meta property="og:url" content="https://param087.github.io/">
+
+    <!-- Agent stream config -->
+    <!-- After deploying the Worker, replace the content with the deployed URL (e.g. https://agent-stream.<acct>.workers.dev). -->
+    <meta name="agent-stream-url" content="REPLACE_WITH_DEPLOYED_WORKER_URL">
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#0a0a0c">
+
+    <!-- Favicon (inline SVG to avoid 404) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0c'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='Inter,sans-serif' font-size='34' font-weight='700' fill='%23ffffff'%3EP%3C/text%3E%3C/svg%3E">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom Tailwind Configuration -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#2563eb',
-                        secondary: '#1e40af',
-                        accent: '#3b82f6',
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .hover-lift {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .hover-lift:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        
-        .section-padding {
-            padding: 5rem 0;
-        }
-        
-        @media (max-width: 768px) {
-            .section-padding {
-                padding: 3rem 0;
-            }
-        }
-    </style>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/tokens.css">
+    <link rel="stylesheet" href="assets/css/live-lab.css">
+    <link rel="stylesheet" href="assets/css/site.css">
+
+    <!-- JSON Feed alternate (resolves after Worker deploy) -->
+    <link rel="alternate" type="application/feed+json" title="Agent activity feed" href="REPLACE_WITH_DEPLOYED_WORKER_URL/feed.json">
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body>
 
-    <!-- Navigation -->
-    <nav class="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex-shrink-0">
-                    <a href="#home" class="text-2xl font-bold gradient-text">PB</a>
+<!-- =============== NAV =============== -->
+<header class="nav" role="banner">
+    <div class="container nav__inner">
+        <a class="nav__brand" href="#home">
+            <span class="dot" aria-hidden="true"></span>
+            <span>param.bhavsar</span>
+        </a>
+        <nav class="nav__links" aria-label="Primary">
+            <a href="#live-lab">Live Lab</a>
+            <a href="#about">About</a>
+            <a href="#resume">Resume</a>
+            <a href="#research">Research</a>
+            <a href="#skills">Skills</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <div class="nav__cta">
+            <button id="theme-toggle" class="btn btn--ghost" aria-label="Toggle theme" title="Toggle light/dark">
+                <i class="fas fa-circle-half-stroke"></i>
+            </button>
+            <a class="btn btn--primary" href="resume.pdf" download="Param_Bhavsar_Resume.pdf">
+                <i class="fas fa-download"></i> Resume
+            </a>
+            <button class="nav__toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- =============== PULSE BANNER =============== -->
+<div class="pulse-banner" aria-label="Live agent activity ticker">
+    <span class="pulse-banner__label">
+        <span class="chip chip--live"><span class="dot"></span>live</span>
+        agents:
+    </span>
+    <div class="pulse-banner__marquee" aria-hidden="false">
+        <div class="pulse-banner__track" data-pulse-banner-track aria-live="polite" aria-atomic="false">
+            <span class="pulse-banner__item">connecting…</span>
+        </div>
+    </div>
+</div>
+
+<main id="main">
+
+<!-- =============== HERO =============== -->
+<section id="home" class="hero">
+    <div class="bg-glow" aria-hidden="true"></div>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="container hero__inner">
+        <div data-reveal>
+            <span class="eyebrow">AI-augmented software engineer</span>
+            <h1 class="h-display">
+                I build distributed systems —<br>
+                <span style="color:var(--accent)">with a swarm of agents</span>
+                in the loop.
+            </h1>
+            <p class="lede">
+                Software engineer with 4+ years shipping high-performance, event-driven
+                systems — scaled HSBC payments from 95K to 410K req/s, ran fraud detection
+                at >5K TPS, and now build AI-driven testing and IoT telemetry at Eaton.
+                Below, a live stream of the coding agents working with me right now.
+            </p>
+            <div class="hero__cta">
+                <a href="#live-lab" class="btn btn--primary"><i class="fas fa-bolt"></i> See live activity</a>
+                <a href="#resume" class="btn"><i class="fas fa-briefcase"></i> View experience</a>
+                <a href="https://github.com/param087" target="_blank" rel="noopener" class="btn btn--ghost"><i class="fab fa-github"></i> GitHub</a>
+            </div>
+
+            <div class="stat-strip" role="list" aria-label="Live agent activity stats">
+                <div class="stat" role="listitem">
+                    <div class="stat__num" id="stat-today" data-value="0">0</div>
+                    <div class="stat__label">Agent events today</div>
                 </div>
-                
-                <!-- Desktop Navigation -->
-                <div class="hidden md:flex space-x-8">
-                    <a href="#home" class="text-gray-700 hover:text-primary transition duration-300">Home</a>
-                    <a href="#about" class="text-gray-700 hover:text-primary transition duration-300">About</a>
-                    <a href="#resume" class="text-gray-700 hover:text-primary transition duration-300">Resume</a>
-                    <a href="#projects" class="text-gray-700 hover:text-primary transition duration-300">Projects</a>
-                    <a href="#research" class="text-gray-700 hover:text-primary transition duration-300">Research</a>
-                    <a href="#skills" class="text-gray-700 hover:text-primary transition duration-300">Skills</a>
-                    <a href="#certifications" class="text-gray-700 hover:text-primary transition duration-300">Certifications</a>
-                    <a href="#contact" class="text-gray-700 hover:text-primary transition duration-300">Contact</a>
+                <div class="stat" role="listitem">
+                    <div class="stat__num" id="stat-7d" data-value="0">0</div>
+                    <div class="stat__label">Last 7 days</div>
                 </div>
-                
-                <!-- Mobile menu button -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-gray-700 hover:text-primary focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
+                <div class="stat" role="listitem">
+                    <div class="stat__num" id="stat-30d" data-value="0">0</div>
+                    <div class="stat__label">Last 30 days</div>
+                </div>
+                <div class="stat" role="listitem">
+                    <div class="stat__num">6</div>
+                    <div class="stat__label">Agents in rotation</div>
                 </div>
             </div>
         </div>
-        
-        <!-- Mobile Navigation -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="#home" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Home</a>
-                <a href="#about" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">About</a>
-                <a href="#resume" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Resume</a>
-                <a href="#projects" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Projects</a>
-                <a href="#research" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Research</a>
-                <a href="#skills" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Skills</a>
-                <a href="#certifications" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Certifications</a>
-                <a href="#contact" class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Contact</a>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 pt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div class="text-center">
-                <div class="mb-8">
-                    <div class="w-40 h-40 mx-auto rounded-full bg-gradient-to-br from-primary to-accent p-1">
-                        <img src="profile.jpg" alt="Param Manoj Bhavsar - Software Engineer" 
-                             class="w-full h-full rounded-full object-cover">
-                    </div>
-                </div>
-                <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-4">
-                    <span class="gradient-text">Param Manoj Bhavsar</span>
-                </h1>
-                <p class="text-2xl md:text-3xl font-semibold text-gray-800 mb-3">
-                    Software Engineer
+        <div class="hero__visual" data-reveal>
+            <canvas id="hero-swarm" class="hero__canvas" aria-hidden="true"></canvas>
+            <img src="profile.jpg" alt="Param Manoj Bhavsar" class="hero__avatar">
+        </div>
+    </div>
+</section>
+
+<!-- =============== LIVE LAB =============== -->
+<section id="live-lab" class="section">
+    <div class="container">
+        <header style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:var(--sp-4); margin-bottom: var(--sp-5);" data-reveal>
+            <div>
+                <span class="eyebrow">Live Lab</span>
+                <h2 class="h-section">The agents working with me, in real time</h2>
+                <p class="lede" style="max-width: 60ch;">
+                    Every time an AI coding agent (OpenCode, Claude Code, Copilot, Jules, Cursor, …)
+                    helps me with something, it pings a small Cloudflare Worker. Below is
+                    that stream — events, stats, and an activity heatmap.
                 </p>
-                <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                    <strong>4+ years of experience</strong> designing and optimizing scalable, high-performance distributed systems and microservices for enterprise applications. 
-                    Specialized in event-driven architecture, cloud-native development, and high-performance computing.
-                </p>
+            </div>
+            <div data-lab-tabs class="tabs" role="tablist" aria-label="Live Lab views">
+                <button role="tab" class="tab" aria-selected="true" aria-controls="lab-stream-panel" id="tab-stream">Stream</button>
+                <button role="tab" class="tab" aria-selected="false" aria-controls="lab-stats-panel" id="tab-stats">Stats</button>
+                <button role="tab" class="tab" aria-selected="false" aria-controls="lab-heatmap-panel" id="tab-heatmap">Heatmap</button>
+            </div>
+        </header>
 
-                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                    <a href="#projects" class="bg-primary hover:bg-secondary text-white px-8 py-3 rounded-lg font-semibold transition duration-300 shadow-lg hover:shadow-xl">
-                        View My Work
-                    </a>
-                    <a href="resume.pdf" download="Param_Bhavsar_Resume.pdf" class="bg-white hover:bg-gray-50 text-primary border-2 border-primary px-8 py-3 rounded-lg font-semibold transition duration-300">
-                        Download Resume
-                    </a>
+        <div class="lab-tabs__panels">
+            <div role="tabpanel" id="lab-stream-panel" class="lab-panel" aria-labelledby="tab-stream">
+                <div id="activity-stream" class="stream" aria-live="polite">
+                    <div class="stream-empty">Connecting to the agent stream…</div>
                 </div>
-                
-                <div class="flex justify-center space-x-6">
-                    <a href="https://github.com/param087" target="_blank" class="text-gray-600 hover:text-primary transition duration-300" title="GitHub">
-                        <i class="fab fa-github text-3xl"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/in/param-bhavsar/" target="_blank" class="text-gray-600 hover:text-primary transition duration-300" title="LinkedIn">
-                        <i class="fab fa-linkedin text-3xl"></i>
-                    </a>
-                    <a href="mailto:&#98;&#104;&#97;&#118;&#115;&#97;&#114;&#112;&#97;&#114;&#97;&#109;&#48;&#56;&#55;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" class="text-gray-600 hover:text-primary transition duration-300" title="Email">
-                        <i class="fas fa-envelope text-3xl"></i>
-                    </a>
-                    <a href="https://x.com/param087" target="_blank" class="text-gray-600 hover:text-primary transition duration-300" title="X (Twitter)">
-                        <i class="fab fa-x-twitter text-3xl"></i>
-                    </a>
+            </div>
+            <div role="tabpanel" id="lab-stats-panel" class="lab-panel" aria-labelledby="tab-stats" hidden>
+                <div id="lab-stats"><div class="stream-empty">Loading stats…</div></div>
+            </div>
+            <div role="tabpanel" id="lab-heatmap-panel" class="lab-panel" aria-labelledby="tab-heatmap" hidden>
+                <div id="lab-heatmap"><div class="stream-empty">Loading heatmap…</div></div>
+            </div>
+        </div>
+
+        <!-- AI Stack cards -->
+        <div style="margin-top: var(--sp-8);" data-reveal>
+            <span class="eyebrow">AI stack in rotation</span>
+            <h3 class="h-section" style="font-size: var(--fs-xl);">Who's on the team this month</h3>
+            <div class="stack-grid" style="margin-top: var(--sp-5);">
+                <div class="stack-card" data-stack-agent="opencode" style="--agent-color:#22d3ee">
+                    <span class="stack-card__role">Pair-coding CLI</span>
+                    <span class="stack-card__name">OpenCode</span>
+                    <span class="stack-card__count">0</span>
+                </div>
+                <div class="stack-card" data-stack-agent="claude-code" style="--agent-color:#f59e0b">
+                    <span class="stack-card__role">Long-context refactors</span>
+                    <span class="stack-card__name">Claude Code</span>
+                    <span class="stack-card__count">0</span>
+                </div>
+                <div class="stack-card" data-stack-agent="copilot" style="--agent-color:#a855f7">
+                    <span class="stack-card__role">In-editor completions</span>
+                    <span class="stack-card__name">GitHub Copilot</span>
+                    <span class="stack-card__count">0</span>
+                </div>
+                <div class="stack-card" data-stack-agent="jules" style="--agent-color:#10b981">
+                    <span class="stack-card__role">Async PR agent</span>
+                    <span class="stack-card__name">Jules</span>
+                    <span class="stack-card__count">0</span>
+                </div>
+                <div class="stack-card" data-stack-agent="cursor" style="--agent-color:#ec4899">
+                    <span class="stack-card__role">IDE-native pair</span>
+                    <span class="stack-card__name">Cursor</span>
+                    <span class="stack-card__count">0</span>
+                </div>
+                <div class="stack-card" data-stack-agent="codex" style="--agent-color:#94a3b8">
+                    <span class="stack-card__role">Code generation</span>
+                    <span class="stack-card__name">Codex / others</span>
+                    <span class="stack-card__count">0</span>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- About Section -->
-    <section id="about" class="section-padding bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">About Me</h2>
-                <div class="w-20 h-1 bg-primary mx-auto"></div>
+<!-- =============== ABOUT =============== -->
+<section id="about" class="section">
+    <div class="container">
+        <div class="about-grid" data-reveal>
+            <div>
+                <img src="profile.jpg" alt="Param Manoj Bhavsar" class="about-photo">
+                <dl class="kv-list">
+                    <dt>Based in</dt><dd>Galesburg, MI · open to remote</dd>
+                    <dt>Currently</dt><dd>Software Engineer @ Eaton</dd>
+                    <dt>Previously</dt><dd>HSBC · BMC Software · GSoC (TF)</dd>
+                    <dt>MS CSE</dt><dd>The Ohio State University, 2024</dd>
+                    <dt>Citations</dt><dd>19 · h-index 2 · i10 1</dd>
+                </dl>
             </div>
-            <div class="grid md:grid-cols-2 gap-12 items-start">
-                <div>
-                    <h3 class="text-3xl font-bold text-gray-900 mb-4">
-                        Building High-Performance <span class="gradient-text">Distributed Systems</span> at Scale
-                    </h3>
-                    <p class="text-gray-700 mb-4 leading-relaxed text-lg">
-                        Software Engineer with 4+ years of experience designing and optimizing distributed systems and 
-                        microservices that power critical financial infrastructure. Proven track record of scaling systems 
-                        from <strong>95K→410K req/s</strong> (5.3× improvement), reducing latency by <strong>68%</strong>, 
-                        and achieving <strong>99.9% uptime</strong> while securing <strong>$3T+ annual transaction volume</strong>.
-                    </p>
-                    <p class="text-gray-600 mb-4 leading-relaxed">
-                        <strong class="text-gray-900">Technical Leadership:</strong> Led multi-country payment processing 
-                        expansion across 4 jurisdictions supporting 30+ payment types and unlocking <strong>$150M new annual 
-                        volume</strong>. Architected event-driven telemetry pipeline serving 200K+ customers with 99.9% 
-                        delivery reliability. Designed fraud detection platform sustaining >5K TPS with 27% reduction in 
-                        false negatives. Mentored 6 capstone students in BLE mesh and firmware development.
-                    </p>
-                    <p class="text-gray-600 mb-4 leading-relaxed">
-                        <strong class="text-gray-900">Innovation & Impact:</strong> Built AI-driven API testing 
-                        workflow increasing coverage from 80%→90% while cutting authoring time by 60%. Engineered automated 
-                        test framework reducing release cycles 3× faster (30→10 days). Optimized staff operations portal, 
-                        cutting median page response by 60% (P95 from 2s→800ms).
-                    </p>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        <strong class="text-gray-900">Engineering Philosophy:</strong> I build resilient, scalable systems 
-                        through event-driven architecture, microservices decomposition, and comprehensive observability. 
-                        Strong advocate for test-driven development, CI/CD automation, and data-driven decision making.
-                    </p>
-                    
-                    <!-- Core Competencies -->
-                    <div class="bg-blue-50 border-l-4 border-primary p-4 mb-4">
-                        <h4 class="font-semibold text-gray-900 mb-2">Core Competencies</h4>
-                        <ul class="text-sm text-gray-700 space-y-1">
-                            <li>• Event-Driven Architecture & Microservices (Kafka, Service Bus, MuleSoft)</li>
-                            <li>• High-Performance Distributed Systems (5K+ TPS, 410K req/s)</li>
-                            <li>• Cloud-Native Development (AWS, Azure, Kubernetes, Terraform)</li>
-                            <li>• Banking & FinTech Domain Expertise (Payments, Fraud Detection)</li>
-                            <li>• Technical Leadership & Cross-Functional Collaboration</li>
-                        </ul>
-                    </div>
-                    
-                    <!-- Additional Highlights -->
-                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 border-l-4 border-purple-500 p-4">
-                        <h4 class="font-semibold text-gray-900 mb-2">Notable Achievements</h4>
-                        <ul class="text-sm text-gray-700 space-y-1">
-                            <li>• <strong>Google Summer of Code:</strong> TensorFlow/Swift for TensorFlow contributor</li>
-                            <li>• <strong>Blockchain:</strong> Hyperledger Fabric consensus algorithm development</li>
-                            <li>• <strong>Research:</strong> Computer Vision (Ophthalmology), AutoML, Anomaly Detection</li>
-                            <li>• <strong>Open Source:</strong> Active contributor to ML and distributed systems projects</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="space-y-4">
-                    <!-- Experience -->
-                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-100">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-briefcase text-primary text-2xl mr-3"></i>
-                            <h4 class="text-lg font-bold text-gray-900">Experience</h4>
-                        </div>
-                        <p class="text-gray-700 font-semibold">4+ Years in Software Engineering</p>
-                        <p class="text-sm text-gray-600 mt-1">Eaton (Software Engineer) • HSBC (Senior SDE)</p>
-                        <p class="text-xs text-gray-500 mt-2">Led distributed systems, cloud migrations, and payment processing at Fortune 500 companies</p>
-                    </div>
-                    
-                    <!-- Education -->
-                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-100">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-graduation-cap text-primary text-2xl mr-3"></i>
-                            <h4 class="text-lg font-bold text-gray-900">Education</h4>
-                        </div>
-                        <p class="text-gray-700 font-semibold">MS in Computer Science & Engineering</p>
-                        <p class="text-sm text-gray-600">The Ohio State University (2022-2024)</p>
-                        <p class="text-gray-700 font-semibold mt-2">BE in Computer Engineering</p>
-                        <p class="text-sm text-gray-600">Pune Institute of Computer Technology (2015-2019)</p>
-                    </div>
-                    
-                    <!-- Impact Metrics -->
-                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-lg border border-green-100">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-chart-line text-primary text-2xl mr-3"></i>
-                            <h4 class="text-lg font-bold text-gray-900">Impact Delivered</h4>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3 text-center">
-                            <div>
-                                <div class="text-2xl font-bold text-primary">5.3×</div>
-                                <div class="text-xs text-gray-600">Throughput Increase</div>
-                            </div>
-                            <div>
-                                <div class="text-2xl font-bold text-primary">68%</div>
-                                <div class="text-xs text-gray-600">Latency Reduction</div>
-                            </div>
-                            <div>
-                                <div class="text-2xl font-bold text-primary">99.9%</div>
-                                <div class="text-xs text-gray-600">System Uptime</div>
-                            </div>
-                            <div>
-                                <div class="text-2xl font-bold text-primary">$3T+</div>
-                                <div class="text-xs text-gray-600">Volume Secured</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Technical Expertise -->
-                    <div class="bg-gradient-to-br from-orange-50 to-yellow-50 p-6 rounded-lg border border-orange-100">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-code text-primary text-2xl mr-3"></i>
-                            <h4 class="text-lg font-bold text-gray-900">Technical Expertise</h4>
-                        </div>
-                        <div class="space-y-2">
-                            <div>
-                                <p class="text-xs font-semibold text-gray-700 mb-1">Languages</p>
-                                <p class="text-xs text-gray-600">Java, Python, C#, Go, TypeScript</p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-semibold text-gray-700 mb-1">Distributed Systems</p>
-                                <p class="text-xs text-gray-600">Kafka, Event-Driven, Flink, Redis, gRPC</p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-semibold text-gray-700 mb-1">Cloud & Infra</p>
-                                <p class="text-xs text-gray-600">AWS, Azure, Kubernetes, Terraform, Docker</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Recognition -->
-                    <div class="bg-gradient-to-br from-pink-50 to-red-50 p-6 rounded-lg border border-pink-100">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-trophy text-primary text-2xl mr-3"></i>
-                            <h4 class="text-lg font-bold text-gray-900">Recognition</h4>
-                        </div>
-                        <ul class="text-sm text-gray-700 space-y-1">
-                            <li>• Circle of Excellence Award - HSBC Q1 2022</li>
-                            <li>• Google Summer of Code (GSoC) - TensorFlow</li>
-                            <li>• Banking as a Service Forum Committee Member</li>
-                            <li>• Led L2 Support & War Room Resolutions</li>
-                            <li>• Research in ML, Computer Vision, Blockchain</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+            <div>
+                <span class="eyebrow">About</span>
+                <h2 class="h-section">Building high-performance systems — now with agents in the loop.</h2>
+                <p>I'm a software engineer with 4+ years of experience designing and optimizing
+                distributed systems that power critical financial and IoT infrastructure.
+                I've scaled HSBC payment processing from <strong>95K → 410K req/s</strong> (5.3×),
+                cut p99 latency <strong>68%</strong>, and secured <strong>$3T+</strong> in
+                annual transaction volume across 4 jurisdictions.</p>
 
-    <!-- Resume Section -->
-    <section id="resume" class="section-padding bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Resume</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
-                <p class="text-gray-600 mb-8">Download my detailed resume or view my experience below</p>
-                <a href="resume.pdf" download="Param_Bhavsar_Resume.pdf" class="inline-flex items-center bg-primary hover:bg-secondary text-white px-8 py-3 rounded-lg font-semibold transition duration-300 shadow-lg hover:shadow-xl">
-                    <i class="fas fa-download mr-2"></i>
-                    Download Resume (PDF)
-                </a>
-            </div>
+                <p style="color: var(--text-2)">At Eaton I built an event-driven telemetry pipeline serving
+                <strong>200K+ customers</strong> at 99.9% delivery reliability, and I architected an
+                <strong>AI-driven unit-test generation workflow</strong> that raised coverage 80% → 90% while
+                cutting authoring time 60%.</p>
 
-            <!-- Experience Timeline -->
-            <div class="mt-16">
-                <h3 class="text-3xl font-bold text-gray-900 mb-8 text-center">Work Experience</h3>
-                <div class="space-y-8">
-                    <!-- Experience Item 1: Eaton -->
-                    <div class="bg-white rounded-lg shadow-md p-6 hover-lift border-l-4 border-primary">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                            <div>
-                                <h4 class="text-2xl font-bold text-gray-900">Software Engineer</h4>
-                                <p class="text-primary font-semibold text-lg">Eaton</p>
-                                <p class="text-gray-600 text-sm"><i class="fas fa-map-marker-alt mr-1"></i>Galesburg, MI</p>
-                            </div>
-                            <div class="text-gray-500 mt-2 md:mt-0 font-medium">
-                                <i class="fas fa-calendar-alt mr-2"></i>July 2024 - Present
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <p class="text-gray-700 italic mb-3">Leading IoT telemetry infrastructure and AI-driven testing initiatives</p>
-                        </div>
-                        <ul class="space-y-3 text-gray-700">
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Designed and implemented event-driven telemetry pipeline</strong> (.NET Azure Functions, Service Bus) ingesting device metrics for <strong class="text-blue-600">200K+ customers</strong>; improved delivery reliability to <strong class="text-green-600">99.9%</strong> and cut processing latency <strong class="text-green-600">35%</strong></span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Built AI-driven unit test generation workflow</strong> (OpenAI + agent orchestration) raising coverage from <strong class="text-green-600">80%→90%</strong> and cutting authoring time <strong class="text-amber-600">60%</strong>, reducing escaped defects</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Engineered automated test framework for connected BLE mesh devices</strong> (Go, C++, Python, Azure), cutting release cycle time from 30→<strong class="text-amber-600">10 days</strong> <span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-xs font-semibold">⚡ 3× faster</span></span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Architected analytics platform</strong> unifying plant and product cloud data, enabling defect prediction and recall readiness</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Coached 6 Capstone students</strong> in designing BLE mesh and firmware device simulation</span>
-                            </li>
-                        </ul>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">.NET</span>
-                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">Azure Functions</span>
-                            <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">Service Bus</span>
-                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Go</span>
-                            <span class="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full text-xs font-medium">Python</span>
-                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">C++</span>
-                            <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-medium">OpenAI</span>
-                            <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">BLE Mesh</span>
-                        </div>
-                    </div>
+                <p style="color: var(--text-2)">Lately, the most interesting part of my workflow is how much of it runs
+                through AI coding agents. So I built a live stream of that activity — see
+                <a href="#live-lab">Live Lab</a> above — because the future of "what does a software engineer do"
+                is going to look very different, and I'd rather show it than describe it.</p>
 
-                    <!-- Experience Item 2: Eaton Internship -->
-                    <div class="bg-white rounded-lg shadow-md p-6 hover-lift border-l-4 border-orange-400">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                            <div>
-                                <h4 class="text-2xl font-bold text-gray-900">Software Engineering Intern</h4>
-                                <p class="text-primary font-semibold text-lg">Eaton</p>
-                                <p class="text-gray-600 text-sm"><i class="fas fa-map-marker-alt mr-1"></i>Plymouth, Minnesota</p>
-                            </div>
-                            <div class="text-gray-500 mt-2 md:mt-0 font-medium">
-                                <i class="fas fa-calendar-alt mr-2"></i>May 2023 - August 2023
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <p class="text-gray-700 italic mb-3">Full-time internship developing IoT device testing and monitoring tools</p>
-                        </div>
-                        <ul class="space-y-3 text-gray-700">
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Engineered GUI tool and GATT APIs</strong> using Qt Designer, Python, and C++ to enhance device control and monitoring, reducing testing efforts by <strong class="text-green-600">45%</strong> and increasing production throughput by <strong class="text-green-600">15%</strong></span>
-                            </li>
-                        </ul>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">Python</span>
-                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">C++</span>
-                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">Qt Designer</span>
-                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">GATT APIs</span>
-                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">IoT</span>
-                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">GUI Development</span>
-                        </div>
-                    </div>
-
-                    <!-- Experience Item 3: HSBC Senior -->
-                    <div class="bg-white rounded-lg shadow-md p-6 hover-lift border-l-4 border-blue-400">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                            <div>
-                                <h4 class="text-2xl font-bold text-gray-900">Senior Software Engineer - Commercial Banking</h4>
-                                <p class="text-primary font-semibold text-lg">HSBC</p>
-                                <p class="text-gray-600 text-sm"><i class="fas fa-map-marker-alt mr-1"></i>Pune, India</p>
-                            </div>
-                            <div class="text-gray-500 mt-2 md:mt-0 font-medium">
-                                <i class="fas fa-calendar-alt mr-2"></i>January 2022 - July 2022
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <p class="text-gray-700 italic mb-3">Leading payment processing expansion and Banking-as-a-Service platform development</p>
-                        </div>
-                        <ul class="space-y-3 text-gray-700">
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Led multi-country onboarding of payment processing microservices</strong>, extending support to <strong class="text-blue-600">30+ payment types</strong> across <strong class="text-blue-600">4 jurisdictions</strong>; unlocked <strong class="text-purple-600">$150M</strong> <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-semibold">💰 New Revenue</span></span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Worked on Banking-as-a-Service API platform</strong> (API Gateway, RSA encryption, microservices) serving <strong class="text-blue-600">18K+ corporate clients</strong> and securing <strong class="text-purple-600">$3T+ annual volume</strong>, improved auth throughput by <strong class="text-green-600">20%</strong></span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Optimized staff operations portal</strong> (CloudFront + caching) cutting median page response by <strong class="text-green-600">60%</strong> <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-semibold">⚡ 2s→800ms</span></span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Drove cross-team design reviews</strong> (Payments + Security) aligning on tokenization strategy and rate limiting risk model</span>
-                            </li>
-                        </ul>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Java</span>
-                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Spring Boot</span>
-                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">API Gateway</span>
-                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Microservices</span>
-                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">RSA Encryption</span>
-                            <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">AWS CloudFront</span>
-                        </div>
-                    </div>
-
-                    <!-- Experience Item 4: HSBC Software Engineer -->
-                    <div class="bg-white rounded-lg shadow-md p-6 hover-lift border-l-4 border-green-400">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                            <div>
-                                <h4 class="text-2xl font-bold text-gray-900">Software Engineer - Commercial Banking</h4>
-                                <p class="text-primary font-semibold text-lg">HSBC</p>
-                                <p class="text-gray-600 text-sm"><i class="fas fa-map-marker-alt mr-1"></i>Pune, India</p>
-                            </div>
-                            <div class="text-gray-500 mt-2 md:mt-0 font-medium">
-                                <i class="fas fa-calendar-alt mr-2"></i>July 2019 - December 2021
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <p class="text-gray-700 italic mb-3">Building high-performance distributed systems for financial services</p>
-                        </div>
-                        <ul class="space-y-3 text-gray-700">
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Decomposed monolith into 7 microservices</strong> (Java, Spring Boot, MuleSoft), scaling throughput from 95K→<strong class="text-blue-600">410K req/s</strong> <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-semibold">📈 5.3× improvement</span> and reducing p99 latency from 180→<strong class="text-green-600">58ms</strong> <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-semibold">⚡ -68%</span> via async messaging, circuit breaking, and cache warming</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Contributed to real-time fraud detection platform</strong> (Go, Kafka, Flink, K8s) sustaining <strong class="text-blue-600">>5K TPS</strong>, p95 detection 780ms (median 320ms) and reducing false negatives by <strong class="text-green-600">27%</strong> (manual review backlog <strong class="text-green-600">-15%</strong>)</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Delivered high-throughput notification service</strong> (Java, React, IBM MQ, Kafka) supporting <strong class="text-blue-600">10K+ corporate customers</strong>; achieved <strong class="text-green-600">99.9% delivery reliability</strong> with P95 latency <strong class="text-green-600"><800ms</strong></span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Designed token-bucket rate limiter</strong> (Redis + Lua) sustaining <strong class="text-blue-600">120K req/s</strong> with p99 <strong class="text-green-600"><40ms</strong></span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Implemented payment tracking and authorization UI</strong> (React, Redux) driving <strong class="text-green-600">10% YoY increase</strong> in active users</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Built blue/green deployment pipeline</strong> (GitHub Actions + Terraform) cutting rollout time from 30 min→<strong class="text-amber-600">9 min</strong> <span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-xs font-semibold">⚡ 3.3× faster</span></span>
-                            </li>
-                        </ul>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Java</span>
-                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Spring Boot</span>
-                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">MuleSoft</span>
-                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">Go</span>
-                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Kafka</span>
-                            <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">Flink</span>
-                            <span class="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full text-xs font-medium">Kubernetes</span>
-                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">Redis</span>
-                            <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-medium">React</span>
-                            <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">GitHub Actions</span>
-                        </div>
-                    </div>
-
-                    <!-- Experience Item 5: BMC Software Internship -->
-                    <div class="bg-white rounded-lg shadow-md p-6 hover-lift border-l-4 border-teal-400">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                            <div>
-                                <h4 class="text-2xl font-bold text-gray-900">Project Intern</h4>
-                                <p class="text-primary font-semibold text-lg">BMC Software</p>
-                                <p class="text-gray-600 text-sm"><i class="fas fa-map-marker-alt mr-1"></i>Pune, Maharashtra, India</p>
-                            </div>
-                            <div class="text-gray-500 mt-2 md:mt-0 font-medium">
-                                <i class="fas fa-calendar-alt mr-2"></i>October 2018 - May 2019
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <p class="text-gray-700 italic mb-3">Building blockchain-based license and compliance management system</p>
-                        </div>
-                        <ul class="space-y-3 text-gray-700">
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Architected and built private Blockchain network</strong> using Hyperledger Fabric framework to support licenses and compliance management of CRM products</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-primary mr-2 mt-1">▪</span>
-                                <span><strong>Implemented dynamic Smart Contracts</strong> for license tracking of <strong class="text-blue-600">1500+ customers</strong>, ensuring transparency and immutability in license management</span>
-                            </li>
-                        </ul>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">Hyperledger Fabric</span>
-                            <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">Blockchain</span>
-                            <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">Smart Contracts</span>
-                            <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">Distributed Systems</span>
-                            <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">CRM</span>
-                            <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">Compliance</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Education -->
-            <div class="mt-16">
-                <h3 class="text-3xl font-bold text-gray-900 mb-8 text-center">Education</h3>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="bg-white rounded-lg shadow-md p-6 hover-lift">
-                        <div class="flex items-start mb-4">
-                            <i class="fas fa-graduation-cap text-primary text-3xl mr-4 mt-1"></i>
-                            <div>
-                                <h4 class="text-xl font-semibold text-gray-900">MS in Computer Science and Engineering</h4>
-                                <p class="text-primary font-medium">The Ohio State University</p>
-                                <p class="text-gray-500 flex items-center">
-                                    <i class="fas fa-map-marker-alt mr-2 text-sm"></i>Columbus, OH
-                                </p>
-                                <p class="text-gray-500 flex items-center mt-1">
-                                    <i class="fas fa-calendar-alt mr-2 text-sm"></i>August 2022 - May 2024
-                                </p>
-                            </div>
-                        </div>
-                        <p class="text-gray-600">Specialized in Distributed Systems and Cloud Architecture</p>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md p-6 hover-lift">
-                        <div class="flex items-start mb-4">
-                            <i class="fas fa-graduation-cap text-primary text-3xl mr-4 mt-1"></i>
-                            <div>
-                                <h4 class="text-xl font-semibold text-gray-900">Bachelor of Engineering in Computer Engineering</h4>
-                                <p class="text-primary font-medium">Pune Institute of Computer Technology</p>
-                                <p class="text-gray-500 flex items-center">
-                                    <i class="fas fa-map-marker-alt mr-2 text-sm"></i>Pune, India
-                                </p>
-                                <p class="text-gray-500 flex items-center mt-1">
-                                    <i class="fas fa-calendar-alt mr-2 text-sm"></i>July 2015 - May 2019
-                                </p>
-                            </div>
-                        </div>
-                        <p class="text-gray-600">Foundation in Computer Science, Software Engineering, and Data Structures</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section - COMMENTED OUT -->
-    <!-- Uncomment this section when you have real projects to showcase
-    <section id="projects" class="section-padding bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Featured Projects</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
-                <p class="text-gray-600">A selection of my recent work and contributions</p>
-            </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                [Project cards removed for brevity - see original code]
-            </div>
-        </div>
-    </section>
-    -->
-
-    <!-- Research Section -->
-    <section id="research" class="section-padding bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Research & Publications</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
-                <p class="text-gray-600">Academic contributions and research work</p>
-                <a href="https://scholar.google.com/citations?user=KeQrY7AAAAAJ&hl=en" target="_blank" 
-                   class="inline-flex items-center mt-4 text-primary hover:text-secondary font-semibold transition duration-300">
-                    <i class="fas fa-graduation-cap mr-2"></i>View Google Scholar Profile
-                    <i class="fas fa-external-link-alt ml-2 text-sm"></i>
-                </a>
-                <div class="mt-4 flex justify-center gap-6 text-sm text-gray-600">
-                    <span><strong>19</strong> Citations</span>
-                    <span><strong>2</strong> h-index</span>
-                    <span><strong>1</strong> i10-index</span>
-                </div>
-            </div>
-            <div class="space-y-6">
-                <!-- Research Paper 1 -->
-                <div class="bg-white rounded-lg shadow-md p-6 hover-lift border-l-4 border-blue-500">
-                    <div class="flex items-start">
-                        <i class="fas fa-file-alt text-primary text-3xl mr-4 mt-1"></i>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Forecasting GDP per capita of OECD countries using machine learning and deep learning models</h3>
-                            <p class="text-gray-700 mb-2 font-medium">V Bhardwaj, P Bhavsar, D Patnaik</p>
-                            <p class="text-gray-600 mb-3">
-                                2022 Interdisciplinary Research in Technology and Management (IRTM). 
-                                This paper explores the application of machine learning and deep learning techniques for economic forecasting, 
-                                comparing various models to predict GDP per capita for OECD countries.
-                            </p>
-                            <div class="flex flex-wrap gap-4 text-sm text-gray-500">
-                                <span><i class="fas fa-calendar mr-1"></i>2022</span>
-                                <span><i class="fas fa-book mr-1"></i>IRTM Conference</span>
-                                <span><i class="fas fa-quote-right mr-1"></i>8 Citations</span>
-                                <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=KeQrY7AAAAAJ&citation_for_view=KeQrY7AAAAAJ:9yKSN-GCB0IC" 
-                                   target="_blank" class="text-primary hover:text-secondary transition duration-300">
-                                    <i class="fas fa-external-link-alt mr-1"></i>View Publication
-                                </a>
-                            </div>
-                            <div class="mt-3 flex flex-wrap gap-2">
-                                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Machine Learning</span>
-                                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Deep Learning</span>
-                                <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">Economic Forecasting</span>
-                                <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">Time-Series</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Research Paper 2 -->
-                <div class="bg-white rounded-lg shadow-md p-6 hover-lift border-l-4 border-green-500">
-                    <div class="flex items-start">
-                        <i class="fas fa-file-alt text-primary text-3xl mr-4 mt-1"></i>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Audit and compliance in service management using blockchain</h3>
-                            <p class="text-gray-700 mb-2 font-medium">C Ingle, A Samudre, P Bhavsar, PS Vidap</p>
-                            <p class="text-gray-600 mb-3">
-                                2019 IEEE 16th India Council International Conference (INDICON). 
-                                This paper presents a novel approach to audit and compliance in service management leveraging blockchain technology 
-                                to ensure transparency, immutability, and security in enterprise environments.
-                            </p>
-                            <div class="flex flex-wrap gap-4 text-sm text-gray-500">
-                                <span><i class="fas fa-calendar mr-1"></i>2019</span>
-                                <span><i class="fas fa-book mr-1"></i>IEEE INDICON</span>
-                                <span><i class="fas fa-quote-right mr-1"></i>11 Citations</span>
-                                <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=KeQrY7AAAAAJ&citation_for_view=KeQrY7AAAAAJ:u5HHmVD_uO8C" 
-                                   target="_blank" class="text-primary hover:text-secondary transition duration-300">
-                                    <i class="fas fa-external-link-alt mr-1"></i>View Publication
-                                </a>
-                            </div>
-                            <div class="mt-3 flex flex-wrap gap-2">
-                                <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">Blockchain</span>
-                                <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Service Management</span>
-                                <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">Audit & Compliance</span>
-                                <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-medium">Distributed Systems</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Research Paper 3 -->
-                <div class="bg-white rounded-lg shadow-md p-6 hover-lift border-l-4 border-purple-500">
-                    <div class="flex items-start">
-                        <i class="fas fa-file-alt text-primary text-3xl mr-4 mt-1"></i>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Autonomous Ephemeris Prediction Using Navigation Receivers</h3>
-                            <p class="text-gray-700 mb-2 font-medium">P Bhavsar, A Kshirsagar, A Samudre</p>
-                            <p class="text-gray-600 mb-3">
-                                Research work on autonomous navigation systems focusing on ephemeris prediction using advanced navigation receivers. 
-                                This study contributes to improving GPS accuracy and reliability through predictive modeling.
-                            </p>
-                            <div class="flex flex-wrap gap-4 text-sm text-gray-500">
-                                <span><i class="fas fa-calendar mr-1"></i>2020</span>
-                                <span><i class="fas fa-book mr-1"></i>Research Paper</span>
-                                <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=KeQrY7AAAAAJ&citation_for_view=KeQrY7AAAAAJ:2osOgNQ5qMEC" 
-                                   target="_blank" class="text-primary hover:text-secondary transition duration-300">
-                                    <i class="fas fa-external-link-alt mr-1"></i>View Publication
-                                </a>
-                            </div>
-                            <div class="mt-3 flex flex-wrap gap-2">
-                                <span class="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full text-xs font-medium">Navigation Systems</span>
-                                <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">GPS/GNSS</span>
-                                <span class="px-3 py-1 bg-lime-100 text-lime-700 rounded-full text-xs font-medium">Predictive Modeling</span>
-                                <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">IoT</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="section-padding bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Skills & Technologies</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
-                <p class="text-gray-600">Technical expertise across distributed systems, cloud platforms, and full-stack development</p>
-            </div>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Programming Languages -->
-                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200">
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-code text-primary text-3xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900">Programming Languages</h3>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-blue-600 text-white rounded-full text-sm font-medium">Java</span>
-                        <span class="px-3 py-1 bg-blue-600 text-white rounded-full text-sm font-medium">Python</span>
-                        <span class="px-3 py-1 bg-blue-600 text-white rounded-full text-sm font-medium">C# (.NET)</span>
-                        <span class="px-3 py-1 bg-blue-600 text-white rounded-full text-sm font-medium">Go</span>
-                        <span class="px-3 py-1 bg-blue-500 text-white rounded-full text-sm">TypeScript</span>
-                        <span class="px-3 py-1 bg-blue-500 text-white rounded-full text-sm">JavaScript</span>
-                        <span class="px-3 py-1 bg-blue-400 text-white rounded-full text-sm">C++</span>
-                    </div>
-                </div>
-
-                <!-- Distributed Systems (Core Strength) -->
-                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-network-wired text-primary text-3xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900">Distributed Systems</h3>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-purple-600 text-white rounded-full text-sm font-medium">Kafka</span>
-                        <span class="px-3 py-1 bg-purple-600 text-white rounded-full text-sm font-medium">Event-Driven</span>
-                        <span class="px-3 py-1 bg-purple-600 text-white rounded-full text-sm font-medium">Flink</span>
-                        <span class="px-3 py-1 bg-purple-500 text-white rounded-full text-sm">gRPC</span>
-                        <span class="px-3 py-1 bg-purple-500 text-white rounded-full text-sm">Redis</span>
-                        <span class="px-3 py-1 bg-purple-500 text-white rounded-full text-sm">Hazelcast</span>
-                        <span class="px-3 py-1 bg-purple-400 text-white rounded-full text-sm">IBM MQ</span>
-                    </div>
-                </div>
-
-                <!-- Databases -->
-                <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-6 border border-yellow-200">
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-database text-primary text-3xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900">Databases</h3>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-yellow-600 text-white rounded-full text-sm font-medium">Oracle Database</span>
-                        <span class="px-3 py-1 bg-yellow-600 text-white rounded-full text-sm font-medium">PostgreSQL</span>
-                        <span class="px-3 py-1 bg-yellow-500 text-white rounded-full text-sm">MySQL</span>
-                        <span class="px-3 py-1 bg-yellow-500 text-white rounded-full text-sm">MongoDB</span>
-                        <span class="px-3 py-1 bg-yellow-500 text-white rounded-full text-sm">Redis</span>
-                        <span class="px-3 py-1 bg-yellow-400 text-white rounded-full text-sm">ClickHouse</span>
-                    </div>
-                </div>
-
-                <!-- Frameworks & Libraries -->
-                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-layer-group text-primary text-3xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900">Frameworks & Libraries</h3>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-green-600 text-white rounded-full text-sm font-medium">Spring Boot</span>
-                        <span class="px-3 py-1 bg-green-600 text-white rounded-full text-sm font-medium">MuleSoft</span>
-                        <span class="px-3 py-1 bg-green-600 text-white rounded-full text-sm font-medium">React</span>
-                        <span class="px-3 py-1 bg-green-500 text-white rounded-full text-sm">Redux</span>
-                        <span class="px-3 py-1 bg-green-500 text-white rounded-full text-sm">.NET</span>
-                        <span class="px-3 py-1 bg-green-500 text-white rounded-full text-sm">Azure Functions</span>
-                        <span class="px-3 py-1 bg-green-400 text-white rounded-full text-sm">Zephyr RTOS</span>
-                    </div>
-                </div>
-
-                <!-- Cloud Platforms & Infrastructure -->
-                <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-6 border border-indigo-200">
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-cloud text-primary text-3xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900">Cloud & Infrastructure</h3>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-indigo-600 text-white rounded-full text-sm font-medium">AWS</span>
-                        <span class="px-3 py-1 bg-indigo-600 text-white rounded-full text-sm font-medium">Azure</span>
-                        <span class="px-3 py-1 bg-indigo-600 text-white rounded-full text-sm font-medium">Kubernetes</span>
-                        <span class="px-3 py-1 bg-indigo-500 text-white rounded-full text-sm">Docker</span>
-                        <span class="px-3 py-1 bg-indigo-500 text-white rounded-full text-sm">Terraform</span>
-                        <span class="px-3 py-1 bg-indigo-500 text-white rounded-full text-sm">Cloud Foundry</span>
-                        <span class="px-3 py-1 bg-indigo-400 text-white rounded-full text-sm">CloudFront</span>
-                    </div>
-                </div>
-
-                <!-- DevOps & Tooling -->
-                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-6 border border-red-200">
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-cogs text-primary text-3xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900">DevOps & Tooling</h3>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-red-600 text-white rounded-full text-sm font-medium">GitHub Actions</span>
-                        <span class="px-3 py-1 bg-red-600 text-white rounded-full text-sm font-medium">Jenkins</span>
-                        <span class="px-3 py-1 bg-red-500 text-white rounded-full text-sm">AppDynamics</span>
-                        <span class="px-3 py-1 bg-red-500 text-white rounded-full text-sm">Swagger/OpenAPI</span>
-                        <span class="px-3 py-1 bg-red-500 text-white rounded-full text-sm">Git</span>
-                        <span class="px-3 py-1 bg-red-400 text-white rounded-full text-sm">Figma</span>
-                    </div>
-                </div>
-
-                <!-- Security & Quality -->
-                <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-6 border border-orange-200">
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-shield-alt text-primary text-3xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900">Security & Quality</h3>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-orange-600 text-white rounded-full text-sm font-medium">RSA Encryption</span>
-                        <span class="px-3 py-1 bg-orange-600 text-white rounded-full text-sm font-medium">2FA/Auth</span>
-                        <span class="px-3 py-1 bg-orange-500 text-white rounded-full text-sm">Load Testing</span>
-                        <span class="px-3 py-1 bg-orange-500 text-white rounded-full text-sm">Threat Modeling</span>
-                        <span class="px-3 py-1 bg-orange-500 text-white rounded-full text-sm">IAM</span>
-                        <span class="px-3 py-1 bg-orange-400 text-white rounded-full text-sm">Static Analysis</span>
-                    </div>
-                </div>
-
-                <!-- Machine Learning & AI -->
-                <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg p-6 border border-pink-200">
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-brain text-primary text-3xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900">Machine Learning & AI</h3>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-pink-600 text-white rounded-full text-sm font-medium">LLM</span>
-                        <span class="px-3 py-1 bg-pink-600 text-white rounded-full text-sm font-medium">OpenAI</span>
-                        <span class="px-3 py-1 bg-pink-600 text-white rounded-full text-sm font-medium">AI Agent</span>
-                        <span class="px-3 py-1 bg-pink-600 text-white rounded-full text-sm font-medium">MCP</span>
-                        <span class="px-3 py-1 bg-pink-500 text-white rounded-full text-sm">TensorFlow</span>
-                        <span class="px-3 py-1 bg-pink-500 text-white rounded-full text-sm">Swift for TF</span>
-                        <span class="px-3 py-1 bg-pink-500 text-white rounded-full text-sm">Scikit-learn</span>
-                        <span class="px-3 py-1 bg-pink-400 text-white rounded-full text-sm">Pandas</span>
-                        <span class="px-3 py-1 bg-pink-400 text-white rounded-full text-sm">NumPy</span>
-                    </div>
-                </div>
-
-                <!-- IoT & Embedded Systems -->
-                <div class="bg-gradient-to-br from-teal-50 to-teal-100 rounded-lg p-6 border border-teal-200">
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-microchip text-primary text-3xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900">IoT & Embedded</h3>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-teal-600 text-white rounded-full text-sm font-medium">BLE Mesh</span>
-                        <span class="px-3 py-1 bg-teal-600 text-white rounded-full text-sm font-medium">Zephyr RTOS</span>
-                        <span class="px-3 py-1 bg-teal-500 text-white rounded-full text-sm">Azure IoT</span>
-                        <span class="px-3 py-1 bg-teal-500 text-white rounded-full text-sm">Service Bus</span>
-                        <span class="px-3 py-1 bg-teal-400 text-white rounded-full text-sm">Device Telemetry</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Certifications & Training Section -->
-    <section id="certifications" class="section-padding bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-8">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Certifications</h2>
-                <div class="w-20 h-1 bg-primary mx-auto"></div>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Certificate 1: Kubernetes -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden hover-lift border-t-4 border-blue-500">
-                    <div class="p-3">
-                        <div class="flex items-center justify-center mb-2">
-                            <img src="https://cdn.qwiklabs.com/3cUZzotUhC3sWESWmiP9mofbB%2BcZrrX5NiKJEGZBS%2B4%3D" alt="Kubernetes Badge" class="w-12 h-12">
-                        </div>
-                        <h3 class="text-base font-semibold text-gray-900 mb-1 text-center">Kubernetes in GCP</h3>
-                        <p class="text-xs text-gray-500 mb-2 text-center">Oct 2020 • <a href="https://www.cloudskillsboost.google/public_profiles/fb2d8789-d598-473a-b663-0b2d24532c93/badges/468143" target="_blank" class="text-primary hover:text-secondary">View</a></p>
-                        <div class="flex flex-wrap gap-1 justify-center">
-                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">K8s</span>
-                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">Docker</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Certificate 2: Apigee -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden hover-lift border-t-4 border-green-500">
-                    <div class="p-3">
-                        <div class="flex items-center justify-center mb-2">
-                            <img src="https://cdn.qwiklabs.com/WeOvvctOZmbOnacnbNWdO3Y1xuIbW3MERvfFfk82WnY%3D" alt="Apigee Badge" class="w-12 h-12">
-                        </div>
-                        <h3 class="text-base font-semibold text-gray-900 mb-1 text-center">APIs with Apigee</h3>
-                        <p class="text-xs text-gray-500 mb-2 text-center">Sep 2020 • <a href="https://www.cloudskillsboost.google/public_profiles/fb2d8789-d598-473a-b663-0b2d24532c93/badges/374454" target="_blank" class="text-primary hover:text-secondary">View</a></p>
-                        <div class="flex flex-wrap gap-1 justify-center">
-                            <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Apigee</span>
-                            <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">API Mgmt</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Certificate 3: Data Engineering -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden hover-lift border-t-4 border-purple-500">
-                    <div class="p-3">
-                        <div class="flex items-center justify-center mb-2">
-                            <img src="https://cdn.qwiklabs.com/%2BCsWnL49dO1EiQScypoKfAJdI8oWEgDWqu5PBt%2FWepc%3D" alt="Data Engineering Badge" class="w-12 h-12">
-                        </div>
-                        <h3 class="text-base font-semibold text-gray-900 mb-1 text-center">Data Engineering</h3>
-                        <p class="text-xs text-gray-500 mb-2 text-center">Sep 2019 • <a href="https://www.cloudskillsboost.google/public_profiles/fb2d8789-d598-473a-b663-0b2d24532c93/badges/127252" target="_blank" class="text-primary hover:text-secondary">View</a></p>
-                        <div class="flex flex-wrap gap-1 justify-center">
-                            <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">BigQuery</span>
-                            <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">Dataprep</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Certificate 4: GCP Essentials -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden hover-lift border-t-4 border-yellow-500">
-                    <div class="p-3">
-                        <div class="flex items-center justify-center mb-2">
-                            <img src="https://cdn.qwiklabs.com/xRejIPM4k6VgI8%2B%2B2Nz5bFHFx8PwK0nn9oQofkJOsS4%3D" alt="GCP Essentials Badge" class="w-12 h-12">
-                        </div>
-                        <h3 class="text-base font-semibold text-gray-900 mb-1 text-center">GCP Essentials</h3>
-                        <p class="text-xs text-gray-500 mb-2 text-center">Sep 2019 • <a href="https://www.cloudskillsboost.google/public_profiles/fb2d8789-d598-473a-b663-0b2d24532c93/badges/124689" target="_blank" class="text-primary hover:text-secondary">View</a></p>
-                        <div class="flex flex-wrap gap-1 justify-center">
-                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs">GCP</span>
-                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs">Cloud</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Certificate 5: Data, ML, AI -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden hover-lift border-t-4 border-red-500">
-                    <div class="p-3">
-                        <div class="flex items-center justify-center mb-2">
-                            <img src="https://cdn.qwiklabs.com/gxhIJxr6qsTOqs8BPaiqxuMKbdpHr%2FJh9q16J%2BsUBNo%3D" alt="Data ML AI Badge" class="w-12 h-12">
-                        </div>
-                        <h3 class="text-base font-semibold text-gray-900 mb-1 text-center">Data, ML, AI</h3>
-                        <p class="text-xs text-gray-500 mb-2 text-center">Jul 2018 • <a href="https://www.cloudskillsboost.google/public_profiles/fb2d8789-d598-473a-b663-0b2d24532c93/badges/37800" target="_blank" class="text-primary hover:text-secondary">View</a></p>
-                        <div class="flex flex-wrap gap-1 justify-center">
-                            <span class="px-2 py-0.5 bg-red-100 text-red-700 rounded text-xs">ML</span>
-                            <span class="px-2 py-0.5 bg-red-100 text-red-700 rounded text-xs">AI</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="section-padding bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Get In Touch</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
-                <p class="text-gray-600">Have a project in mind or want to collaborate? Let's connect!</p>
-                
-                <!-- Open to Opportunities Banner -->
-                <!-- Uncomment this section when actively job searching
-                <div class="mt-8 max-w-4xl mx-auto">
-                    <div class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg shadow-lg p-6 text-white">
-                        <div class="flex items-center justify-center mb-3">
-                            <div class="w-3 h-3 bg-white rounded-full animate-pulse mr-3"></div>
-                            <h3 class="text-2xl font-bold">Open to New Opportunities</h3>
-                        </div>
-                        <p class="text-lg mb-4">Available for full-time Software Engineering positions</p>
-                        <div class="grid md:grid-cols-3 gap-4 text-sm">
-                            <div class="bg-white/20 backdrop-blur rounded-lg p-3">
-                                <i class="fas fa-briefcase text-xl mb-2"></i>
-                                <p class="font-semibold">Full-Time Roles</p>
-                                <p class="text-xs">Backend Engineer, SDE</p>
-                            </div>
-                            <div class="bg-white/20 backdrop-blur rounded-lg p-3">
-                                <i class="fas fa-laptop-house text-xl mb-2"></i>
-                                <p class="font-semibold">Work Arrangement</p>
-                                <p class="text-xs">Remote • Hybrid • On-site</p>
-                            </div>
-                            <div class="bg-white/20 backdrop-blur rounded-lg p-3">
-                                <i class="fas fa-rocket text-xl mb-2"></i>
-                                <p class="font-semibold">Focus Areas</p>
-                                <p class="text-xs">Backend Engineering, Distributed Systems</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                -->
-            </div>
-            
-            <div class="grid md:grid-cols-2 gap-12">
-                <!-- Contact Form -->
-                <div class="bg-white rounded-lg shadow-lg p-8">
-                    <h3 class="text-2xl font-semibold text-gray-900 mb-6">Send a Message</h3>
-                    <form id="contact-form" class="space-y-6">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                            <input type="text" id="name" name="name" required 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition">
-                        </div>
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" id="email" name="email" required 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition">
-                        </div>
-                        <div>
-                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-                            <input type="text" id="subject" name="subject" required 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition">
-                        </div>
-                        <div>
-                            <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
-                            <textarea id="message" name="message" rows="4" required 
-                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition resize-none"></textarea>
-                        </div>
-                        <button type="submit" 
-                                class="w-full bg-primary hover:bg-secondary text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl">
-                            Send Message
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Contact Information -->
-                <div class="space-y-8">
-                    <div class="bg-white rounded-lg shadow-lg p-8">
-                        <h3 class="text-2xl font-semibold text-gray-900 mb-6">Contact Information</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-start">
-                                <i class="fas fa-envelope text-primary text-xl mr-4 mt-1"></i>
-                                <div>
-                                    <h4 class="font-semibold text-gray-900">Email</h4>
-                                    <a href="mailto:&#98;&#104;&#97;&#118;&#115;&#97;&#114;&#112;&#97;&#114;&#97;&#109;&#48;&#56;&#55;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" class="text-gray-600 hover:text-primary transition">
-                                        bhavsarparam087@gmail.com
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fab fa-github text-primary text-xl mr-4 mt-1"></i>
-                                <div>
-                                    <h4 class="font-semibold text-gray-900">GitHub</h4>
-                                    <a href="https://github.com/param087" target="_blank" class="text-gray-600 hover:text-primary transition">
-                                        github.com/param087
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fab fa-linkedin text-primary text-xl mr-4 mt-1"></i>
-                                <div>
-                                    <h4 class="font-semibold text-gray-900">LinkedIn</h4>
-                                    <a href="https://www.linkedin.com/in/param-bhavsar/" target="_blank" class="text-gray-600 hover:text-primary transition">
-                                        linkedin.com/in/param-bhavsar
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fab fa-twitter text-primary text-xl mr-4 mt-1"></i>
-                                <div>
-                                    <h4 class="font-semibold text-gray-900">X (Twitter)</h4>
-                                    <a href="https://x.com/param087" target="_blank" class="text-gray-600 hover:text-primary transition">
-                                        x.com/param087
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-lg shadow-lg p-8">
-                        <h3 class="text-2xl font-semibold text-gray-900 mb-6">Connect With Me</h3>
-                        <div class="flex flex-wrap gap-4">
-                            <a href="https://github.com/param087" target="_blank" 
-                               class="flex items-center justify-center w-12 h-12 bg-gray-100 hover:bg-primary text-gray-700 hover:text-white rounded-lg transition duration-300" title="GitHub">
-                                <i class="fab fa-github text-xl"></i>
-                            </a>
-                            <a href="https://www.linkedin.com/in/param-bhavsar/" target="_blank" 
-                               class="flex items-center justify-center w-12 h-12 bg-gray-100 hover:bg-primary text-gray-700 hover:text-white rounded-lg transition duration-300" title="LinkedIn">
-                                <i class="fab fa-linkedin text-xl"></i>
-                            </a>
-                            <a href="https://x.com/param087" target="_blank" 
-                               class="flex items-center justify-center w-12 h-12 bg-gray-100 hover:bg-primary text-gray-700 hover:text-white rounded-lg transition duration-300" title="X (Twitter)">
-                                <i class="fab fa-twitter text-xl"></i>
-                            </a>
-                            <a href="mailto:&#98;&#104;&#97;&#118;&#115;&#97;&#114;&#112;&#97;&#114;&#97;&#109;&#48;&#56;&#55;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" 
-                               class="flex items-center justify-center w-12 h-12 bg-gray-100 hover:bg-primary text-gray-700 hover:text-white rounded-lg transition duration-300" title="Email">
-                                <i class="fas fa-envelope text-xl"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-3 gap-8 mb-8">
-                <div>
-                    <h3 class="text-white text-xl font-bold mb-4">Param Manoj Bhavsar</h3>
-                    <p class="text-gray-400">
-                        Software Engineer passionate about building innovative solutions and sharing knowledge with the community.
-                    </p>
-                </div>
-                <div>
-                    <h3 class="text-white text-lg font-semibold mb-4">Quick Links</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#about" class="hover:text-primary transition">About</a></li>
-                        <li><a href="#resume" class="hover:text-primary transition">Resume</a></li>
-                        <li><a href="#projects" class="hover:text-primary transition">Projects</a></li>
-                        <li><a href="#research" class="hover:text-primary transition">Research</a></li>
-                        <li><a href="#contact" class="hover:text-primary transition">Contact</a></li>
+                <div class="card" style="margin-top: var(--sp-5);">
+                    <h4 style="margin:0 0 var(--sp-3); color: var(--text-0); font-size: var(--fs-md);">Core focus</h4>
+                    <ul style="margin:0; padding-left: 1.1rem; color: var(--text-2); line-height: 1.8;">
+                        <li>Event-driven architecture & microservices (Kafka, Service Bus, MuleSoft)</li>
+                        <li>High-performance distributed systems (5K+ TPS, 410K req/s)</li>
+                        <li>AI-augmented developer workflows (LLM agents, MCP, test generation)</li>
+                        <li>Cloud-native (AWS, Azure, Kubernetes, Terraform)</li>
+                        <li>Banking & FinTech domain (payments, fraud detection)</li>
                     </ul>
                 </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =============== RESUME =============== -->
+<section id="resume" class="section">
+    <div class="container">
+        <header data-reveal>
+            <span class="eyebrow">Experience</span>
+            <h2 class="h-section">Work timeline</h2>
+        </header>
+
+        <div class="timeline" style="margin-top: var(--sp-6);">
+            <article class="tl-item" data-reveal>
+                <div class="tl-meta">Jul 2024 — Present · Galesburg, MI</div>
+                <h3 class="tl-title">Software Engineer</h3>
+                <div class="tl-company">Eaton</div>
+                <ul class="tl-bullets">
+                    <li>Designed event-driven telemetry pipeline (.NET Azure Functions + Service Bus) ingesting device metrics for <strong>200K+ customers</strong>; <strong>99.9%</strong> delivery reliability, <strong>−35%</strong> processing latency.</li>
+                    <li>Built AI-driven unit-test generation workflow (OpenAI + agent orchestration) — coverage <strong>80% → 90%</strong>, authoring time <strong>−60%</strong>.</li>
+                    <li>Engineered automated test framework for BLE-mesh devices (Go, C++, Python, Azure) — release cycles 30 → <strong>10 days</strong>.</li>
+                    <li>Architected analytics platform unifying plant and product cloud data for defect prediction.</li>
+                    <li>Coached 6 capstone students on BLE mesh + firmware simulation.</li>
+                </ul>
+            </article>
+
+            <article class="tl-item" data-reveal>
+                <div class="tl-meta">Jan 2022 — Jul 2022 · Pune, India</div>
+                <h3 class="tl-title">Senior Software Engineer · Commercial Banking</h3>
+                <div class="tl-company">HSBC</div>
+                <ul class="tl-bullets">
+                    <li>Led multi-country onboarding of payment microservices — <strong>30+ payment types</strong> across <strong>4 jurisdictions</strong>, unlocking <strong>$150M</strong> new annual volume.</li>
+                    <li>Worked on Banking-as-a-Service API platform (API Gateway, RSA, microservices) serving 18K+ corporate clients, <strong>$3T+ annual volume</strong>; auth throughput <strong>+20%</strong>.</li>
+                    <li>Optimised staff operations portal (CloudFront + caching) — median page response <strong>−60%</strong>, P95 2s → 800ms.</li>
+                    <li>Drove cross-team design reviews on tokenisation + rate-limiting risk model.</li>
+                </ul>
+            </article>
+
+            <article class="tl-item" data-reveal>
+                <div class="tl-meta">Jul 2019 — Dec 2021 · Pune, India</div>
+                <h3 class="tl-title">Software Engineer · Commercial Banking</h3>
+                <div class="tl-company">HSBC</div>
+                <ul class="tl-bullets">
+                    <li>Decomposed monolith into 7 microservices (Java, Spring Boot, MuleSoft) — <strong>95K → 410K req/s (5.3×)</strong>, p99 latency 180 → <strong>58ms (−68%)</strong>.</li>
+                    <li>Contributed to real-time fraud detection (Go, Kafka, Flink, K8s) — sustained <strong>&gt;5K TPS</strong>, p95 780ms, false negatives <strong>−27%</strong>.</li>
+                    <li>Delivered notification service (Java, React, IBM MQ, Kafka) for 10K+ corporate customers — <strong>99.9% delivery</strong>, P95 &lt;800ms.</li>
+                    <li>Designed token-bucket rate limiter (Redis + Lua) sustaining <strong>120K req/s</strong>, p99 &lt;40ms.</li>
+                    <li>Built blue/green deploy pipeline (GitHub Actions + Terraform) — rollout 30 → <strong>9 min (3.3×)</strong>.</li>
+                </ul>
+            </article>
+
+            <article class="tl-item" data-reveal>
+                <div class="tl-meta">May 2023 — Aug 2023 · Plymouth, MN</div>
+                <h3 class="tl-title">Software Engineering Intern</h3>
+                <div class="tl-company">Eaton</div>
+                <ul class="tl-bullets">
+                    <li>Built GUI tool + GATT APIs (Qt, Python, C++) for IoT device control — testing effort <strong>−45%</strong>, production throughput <strong>+15%</strong>.</li>
+                </ul>
+            </article>
+
+            <article class="tl-item" data-reveal>
+                <div class="tl-meta">Oct 2018 — May 2019 · Pune, India</div>
+                <h3 class="tl-title">Project Intern</h3>
+                <div class="tl-company">BMC Software</div>
+                <ul class="tl-bullets">
+                    <li>Architected private blockchain (Hyperledger Fabric) for licence & compliance management of CRM products.</li>
+                    <li>Implemented dynamic smart contracts tracking <strong>1500+ customers</strong>.</li>
+                </ul>
+            </article>
+        </div>
+
+        <!-- Education -->
+        <div style="margin-top: var(--sp-8);" data-reveal>
+            <span class="eyebrow">Education</span>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--sp-4); margin-top: var(--sp-4);">
+                <div class="card">
+                    <div class="tl-meta">Aug 2022 — May 2024</div>
+                    <div class="tl-title" style="font-size: var(--fs-md)">MS, Computer Science & Engineering</div>
+                    <div class="tl-company">The Ohio State University</div>
+                    <p style="color: var(--text-2); margin: var(--sp-3) 0 0;">Specialisation: Distributed Systems & Cloud Architecture</p>
+                </div>
+                <div class="card">
+                    <div class="tl-meta">Jul 2015 — May 2019</div>
+                    <div class="tl-title" style="font-size: var(--fs-md)">BE, Computer Engineering</div>
+                    <div class="tl-company">Pune Institute of Computer Technology</div>
+                    <p style="color: var(--text-2); margin: var(--sp-3) 0 0;">Foundation in CS, software engineering, data structures.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =============== RESEARCH =============== -->
+<section id="research" class="section">
+    <div class="container">
+        <header data-reveal>
+            <span class="eyebrow">Research</span>
+            <h2 class="h-section">Publications</h2>
+            <p class="lede">19 citations across machine learning, blockchain, and navigation systems.
+                <a href="https://scholar.google.com/citations?user=KeQrY7AAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar →</a>
+            </p>
+        </header>
+
+        <div style="display:flex; flex-direction:column; gap: var(--sp-4); margin-top: var(--sp-5);">
+            <article class="card research-card" data-reveal>
+                <div class="research-card__year">2022</div>
                 <div>
-                    <h3 class="text-white text-lg font-semibold mb-4">Connect</h3>
-                    <div class="flex space-x-4">
-                        <a href="https://github.com/param087" target="_blank" class="hover:text-primary transition" title="GitHub">
-                            <i class="fab fa-github text-2xl"></i>
-                        </a>
-                        <a href="https://www.linkedin.com/in/param-bhavsar/" target="_blank" class="hover:text-primary transition" title="LinkedIn">
-                            <i class="fab fa-linkedin text-2xl"></i>
-                        </a>
-                        <a href="https://x.com/param087" target="_blank" class="hover:text-primary transition" title="X (Twitter)">
-                            <i class="fab fa-twitter text-2xl"></i>
-                        </a>
-                        <a href="mailto:&#98;&#104;&#97;&#118;&#115;&#97;&#114;&#112;&#97;&#114;&#97;&#109;&#48;&#56;&#55;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" class="hover:text-primary transition" title="Email">
-                            <i class="fas fa-envelope text-2xl"></i>
-                        </a>
+                    <h3 class="research-card__title">Forecasting GDP per capita of OECD countries using machine learning and deep learning models</h3>
+                    <div class="research-card__venue">IRTM Conference · V Bhardwaj, P Bhavsar, D Patnaik · 8 citations</div>
+                    <p class="research-card__abstract">Application of ML/DL models to economic forecasting; comparative study across OECD countries.</p>
+                    <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=KeQrY7AAAAAJ&citation_for_view=KeQrY7AAAAAJ:9yKSN-GCB0IC" target="_blank" rel="noopener">View publication <i class="fas fa-arrow-up-right-from-square" style="font-size: 0.7em"></i></a>
+                </div>
+            </article>
+
+            <article class="card research-card" data-reveal>
+                <div class="research-card__year">2019</div>
+                <div>
+                    <h3 class="research-card__title">Audit and compliance in service management using blockchain</h3>
+                    <div class="research-card__venue">IEEE INDICON · C Ingle, A Samudre, P Bhavsar, PS Vidap · 11 citations</div>
+                    <p class="research-card__abstract">Novel approach to audit and compliance in service management leveraging blockchain for transparency and immutability.</p>
+                    <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=KeQrY7AAAAAJ&citation_for_view=KeQrY7AAAAAJ:u5HHmVD_uO8C" target="_blank" rel="noopener">View publication <i class="fas fa-arrow-up-right-from-square" style="font-size: 0.7em"></i></a>
+                </div>
+            </article>
+
+            <article class="card research-card" data-reveal>
+                <div class="research-card__year">2020</div>
+                <div>
+                    <h3 class="research-card__title">Autonomous Ephemeris Prediction Using Navigation Receivers</h3>
+                    <div class="research-card__venue">Research paper · P Bhavsar, A Kshirsagar, A Samudre</div>
+                    <p class="research-card__abstract">Autonomous navigation systems and ephemeris prediction using advanced navigation receivers — improving GPS accuracy via predictive modelling.</p>
+                    <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=KeQrY7AAAAAJ&citation_for_view=KeQrY7AAAAAJ:2osOgNQ5qMEC" target="_blank" rel="noopener">View publication <i class="fas fa-arrow-up-right-from-square" style="font-size: 0.7em"></i></a>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- =============== SKILLS =============== -->
+<section id="skills" class="section">
+    <div class="container">
+        <header data-reveal>
+            <span class="eyebrow">Skills</span>
+            <h2 class="h-section">Tools of the trade</h2>
+        </header>
+
+        <div class="skills-grid" style="margin-top: var(--sp-5);">
+            <div class="card skill-card" data-reveal>
+                <h3 class="skill-card__title"><i class="fas fa-brain"></i> AI & Agents</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">LLMs</span><span class="skill-tag">OpenAI</span>
+                    <span class="skill-tag">Claude</span><span class="skill-tag">MCP</span>
+                    <span class="skill-tag">Agent orchestration</span><span class="skill-tag">RAG</span>
+                    <span class="skill-tag">TensorFlow</span><span class="skill-tag">Swift for TF</span>
+                </div>
+            </div>
+            <div class="card skill-card" data-reveal>
+                <h3 class="skill-card__title"><i class="fas fa-code"></i> Languages</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Java</span><span class="skill-tag">Python</span>
+                    <span class="skill-tag">C# / .NET</span><span class="skill-tag">Go</span>
+                    <span class="skill-tag">TypeScript</span><span class="skill-tag">C++</span>
+                </div>
+            </div>
+            <div class="card skill-card" data-reveal>
+                <h3 class="skill-card__title"><i class="fas fa-network-wired"></i> Distributed Systems</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Kafka</span><span class="skill-tag">Event-driven</span>
+                    <span class="skill-tag">Flink</span><span class="skill-tag">gRPC</span>
+                    <span class="skill-tag">Redis</span><span class="skill-tag">Hazelcast</span>
+                    <span class="skill-tag">IBM MQ</span>
+                </div>
+            </div>
+            <div class="card skill-card" data-reveal>
+                <h3 class="skill-card__title"><i class="fas fa-cloud"></i> Cloud & Infra</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">AWS</span><span class="skill-tag">Azure</span>
+                    <span class="skill-tag">Kubernetes</span><span class="skill-tag">Docker</span>
+                    <span class="skill-tag">Terraform</span><span class="skill-tag">Cloudflare Workers</span>
+                </div>
+            </div>
+            <div class="card skill-card" data-reveal>
+                <h3 class="skill-card__title"><i class="fas fa-database"></i> Data</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Oracle</span><span class="skill-tag">PostgreSQL</span>
+                    <span class="skill-tag">MySQL</span><span class="skill-tag">MongoDB</span>
+                    <span class="skill-tag">Redis</span><span class="skill-tag">ClickHouse</span>
+                </div>
+            </div>
+            <div class="card skill-card" data-reveal>
+                <h3 class="skill-card__title"><i class="fas fa-layer-group"></i> Frameworks</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Spring Boot</span><span class="skill-tag">MuleSoft</span>
+                    <span class="skill-tag">React</span><span class="skill-tag">Redux</span>
+                    <span class="skill-tag">.NET</span><span class="skill-tag">Azure Functions</span>
+                </div>
+            </div>
+            <div class="card skill-card" data-reveal>
+                <h3 class="skill-card__title"><i class="fas fa-cogs"></i> DevOps</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">GitHub Actions</span><span class="skill-tag">Jenkins</span>
+                    <span class="skill-tag">AppDynamics</span><span class="skill-tag">OpenAPI</span>
+                </div>
+            </div>
+            <div class="card skill-card" data-reveal>
+                <h3 class="skill-card__title"><i class="fas fa-shield-alt"></i> Security</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">RSA / TLS</span><span class="skill-tag">HMAC</span>
+                    <span class="skill-tag">Auth / 2FA</span><span class="skill-tag">Rate limiting</span>
+                    <span class="skill-tag">Threat modeling</span>
+                </div>
+            </div>
+            <div class="card skill-card" data-reveal>
+                <h3 class="skill-card__title"><i class="fas fa-microchip"></i> IoT & Embedded</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">BLE Mesh</span><span class="skill-tag">Zephyr RTOS</span>
+                    <span class="skill-tag">Azure IoT</span><span class="skill-tag">Service Bus</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =============== CERTS =============== -->
+<section id="certifications" class="section">
+    <div class="container">
+        <header data-reveal>
+            <span class="eyebrow">Certifications</span>
+            <h2 class="h-section">Cloud & data badges</h2>
+        </header>
+        <div class="cert-grid" style="margin-top: var(--sp-5);">
+            <a class="card cert-card" data-reveal href="https://www.cloudskillsboost.google/public_profiles/fb2d8789-d598-473a-b663-0b2d24532c93/badges/468143" target="_blank" rel="noopener">
+                <span class="cert-card__name">Kubernetes in GCP</span>
+                <span class="cert-card__issuer">Google Cloud · Oct 2020</span>
+            </a>
+            <a class="card cert-card" data-reveal href="https://www.cloudskillsboost.google/public_profiles/fb2d8789-d598-473a-b663-0b2d24532c93/badges/374454" target="_blank" rel="noopener">
+                <span class="cert-card__name">APIs with Apigee</span>
+                <span class="cert-card__issuer">Google Cloud · Sep 2020</span>
+            </a>
+            <a class="card cert-card" data-reveal href="https://www.cloudskillsboost.google/public_profiles/fb2d8789-d598-473a-b663-0b2d24532c93/badges/127252" target="_blank" rel="noopener">
+                <span class="cert-card__name">Data Engineering</span>
+                <span class="cert-card__issuer">Google Cloud · Sep 2019</span>
+            </a>
+            <a class="card cert-card" data-reveal href="https://www.cloudskillsboost.google/public_profiles/fb2d8789-d598-473a-b663-0b2d24532c93/badges/124689" target="_blank" rel="noopener">
+                <span class="cert-card__name">GCP Essentials</span>
+                <span class="cert-card__issuer">Google Cloud · Sep 2019</span>
+            </a>
+            <a class="card cert-card" data-reveal href="https://www.cloudskillsboost.google/public_profiles/fb2d8789-d598-473a-b663-0b2d24532c93/badges/37800" target="_blank" rel="noopener">
+                <span class="cert-card__name">Data, ML, AI</span>
+                <span class="cert-card__issuer">Google Cloud · Jul 2018</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- =============== CONTACT =============== -->
+<section id="contact" class="section">
+    <div class="container">
+        <header data-reveal>
+            <span class="eyebrow">Contact</span>
+            <h2 class="h-section">Let's build something with agents</h2>
+            <p class="lede">Have a system you want to scale, an AI workflow to design, or just want to compare notes on coding agents? My inbox is open.</p>
+        </header>
+
+        <div class="contact-grid" style="margin-top: var(--sp-5);" data-reveal>
+            <div class="contact-info">
+                <div class="contact-row">
+                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                    <div>
+                        <strong>Email</strong>
+                        <a href="mailto:&#98;&#104;&#97;&#118;&#115;&#97;&#114;&#112;&#97;&#114;&#97;&#109;&#48;&#56;&#55;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">bhavsarparam087@gmail.com</a>
+                    </div>
+                </div>
+                <div class="contact-row">
+                    <i class="fab fa-github" aria-hidden="true"></i>
+                    <div>
+                        <strong>GitHub</strong>
+                        <a href="https://github.com/param087" target="_blank" rel="noopener">github.com/param087</a>
+                    </div>
+                </div>
+                <div class="contact-row">
+                    <i class="fab fa-linkedin" aria-hidden="true"></i>
+                    <div>
+                        <strong>LinkedIn</strong>
+                        <a href="https://www.linkedin.com/in/param-bhavsar/" target="_blank" rel="noopener">linkedin.com/in/param-bhavsar</a>
+                    </div>
+                </div>
+                <div class="contact-row">
+                    <i class="fab fa-x-twitter" aria-hidden="true"></i>
+                    <div>
+                        <strong>X / Twitter</strong>
+                        <a href="https://x.com/param087" target="_blank" rel="noopener">x.com/param087</a>
+                    </div>
+                </div>
+                <div class="contact-row">
+                    <i class="fas fa-rss" aria-hidden="true"></i>
+                    <div>
+                        <strong>Agent activity feed</strong>
+                        <a href="REPLACE_WITH_DEPLOYED_WORKER_URL/feed.json">JSON Feed (subscribe)</a>
                     </div>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-8 text-center">
-                <p class="text-gray-400">
-                    &copy; 2025 Param Manoj Bhavsar. All rights reserved. Built with 
-                    <i class="fas fa-heart text-red-500"></i> using Tailwind CSS
-                </p>
-            </div>
-        </div>
-    </footer>
 
-    <!-- JavaScript for Interactivity -->
-    <script src="assets/js/main.js"></script>
+            <form id="contact-form" class="contact-form card" novalidate>
+                <div class="form-field">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required autocomplete="name">
+                </div>
+                <div class="form-field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required autocomplete="email">
+                </div>
+                <div class="form-field">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-field">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn--primary"><i class="fas fa-paper-plane"></i> Send message</button>
+                <p style="font-size: var(--fs-xs); color: var(--text-3); margin: 0;">This form is currently a demo. For real messages, email me directly.</p>
+            </form>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- =============== FOOTER =============== -->
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong style="color: var(--text-1);">Param Manoj Bhavsar</strong>
+            · <span>© <span id="footer-year">2026</span></span>
+            · <span>Built with Cloudflare Workers + a small swarm of agents.</span>
+        </div>
+        <div class="footer__links">
+            <a href="#live-lab">Live Lab</a>
+            <a href="REPLACE_WITH_DEPLOYED_WORKER_URL/feed.json">JSON Feed</a>
+            <a href="https://github.com/param087" target="_blank" rel="noopener">Source</a>
+        </div>
+        <div class="footer__socials">
+            <a href="https://github.com/param087" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/param-bhavsar/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://x.com/param087" target="_blank" rel="noopener" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+            <a href="mailto:&#98;&#104;&#97;&#118;&#115;&#97;&#114;&#112;&#97;&#114;&#97;&#109;&#48;&#56;&#55;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" aria-label="Email"><i class="fas fa-envelope"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script type="module" src="assets/js/main.js"></script>
 </body>
 </html>
