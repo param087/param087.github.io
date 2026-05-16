@@ -185,16 +185,18 @@ function updateHeroStats(stats) {
 }
 
 function animateCount(node, target) {
-  const start = Number(node.dataset.value ?? 0);
+  const prev = Number(node.dataset.value);
+  const start = Number.isFinite(prev) ? prev : 0;
+  const safeTarget = Number.isFinite(target) ? target : 0;
   const dur = 700;
   const t0 = performance.now();
   function step(t) {
     const k = Math.min(1, (t - t0) / dur);
     const eased = 1 - Math.pow(1 - k, 3);
-    const v = Math.round(start + (target - start) * eased);
+    const v = Math.round(start + (safeTarget - start) * eased);
     node.textContent = v.toLocaleString();
     if (k < 1) requestAnimationFrame(step);
-    else node.dataset.value = String(target);
+    else node.dataset.value = String(safeTarget);
   }
   requestAnimationFrame(step);
 }
