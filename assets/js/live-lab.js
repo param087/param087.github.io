@@ -1,4 +1,9 @@
-/* live-lab.js — renders the activity stream, pulse banner, stats, heatmap. */
+/* live-lab.js — renders the activity stream, pulse banner, stats, heatmap.
+ *
+ * Privacy contract: events carry NO summary, NO project, NO file paths,
+ * NO commands. Only agent, model, ts, duration_ms, tokens, and a numeric
+ * meta digest (lines_added, lines_removed, tool_calls, files_touched).
+ */
 
 import { getActivityClient, timeAgo, agentColor } from "./activity-client.js";
 
@@ -19,26 +24,113 @@ function el(tag, attrs = {}, ...children) {
   return n;
 }
 
+/* ---------- formatters ---------------------------------------------------- */
+
+function tsToIso(ts) {
+  if (typeof ts === "number" && Number.isFinite(ts)) return new Date(ts).toISOString();
+  if (typeof ts === "string") return ts;
+  return "";
+}
+
+function fmtDuration(ms) {
+  if (!Number.isFinite(ms) || ms <= 0) return null;
+  if (ms < 1000) return `${ms}ms`;
+  const s = ms / 1000;
+  if (s < 60) return `${s.toFixed(1)}s`;
+  const m = Math.floor(s / 60);
+  const rem = Math.round(s - m * 60);
+  return rem ? `${m}m${rem}s` : `${m}m`;
+}
+
+function fmtNum(n) {
+  if (!Number.isFinite(n)) return "0";
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
+  if (n >= 1000) return (n / 1000).toFixed(1) + "k";
+  return String(n);
+}
+
+function stripModelPrefix(model) {
+  if (!model) return "";
+  return model.replace(/^github-copilot\//, "").replace(/^anthropic\//, "");
+}
+
+/* ---------- agent metadata (for dynamic stack-grid + colors) -------------- */
+
+const AGENT_META = {
+  opencode:      { name: "OpenCode",       role: "Pair-coding CLI" },
+  "claude-code": { name: "Claude Code",    role: "Long-context refactors" },
+  copilot:       { name: "GitHub Copilot", role: "In-editor completions" },
+  codex:         { name: "Codex",          role: "Code generation" },
+  jules:         { name: "Jules",          role: "Background agent" },
+  cursor:        { name: "Cursor",         role: "AI editor" },
+  aider:         { name: "Aider",          role: "Git-aware pair" },
+  other:         { name: "Other",          role: "Other agents" },
+};
+function agentMeta(name) {
+  return AGENT_META[name] ?? { name, role: "Agent" };
+}
+
+/* ---------- metric pills -------------------------------------------------- */
+
+function metricPills(e) {
+  const m = e.meta || {};
+  const pills = [];
+  const la = Number(m.lines_added) || 0;
+  const lr = Number(m.lines_removed) || 0;
+  if (la || lr) {
+    pills.push(el("span", { class: "metric-pill metric-pill--diff" },
+      la ? el("span", { class: "metric-pill__add" }, `+${fmtNum(la)}`) : null,
+      la && lr ? el("span", { class: "metric-pill__sep" }, " ") : null,
+      lr ? el("span", { class: "metric-pill__del" }, `−${fmtNum(lr)}`) : null,
+    ));
+  }
+  const ft = Number(m.files_touched) || 0;
+  if (ft) pills.push(el("span", { class: "metric-pill" }, `${ft} file${ft === 1 ? "" : "s"}`));
+  const tc = Number(m.tool_calls) || 0;
+  if (tc) pills.push(el("span", { class: "metric-pill" }, `${fmtNum(tc)} tool${tc === 1 ? "" : "s"}`));
+  const tok = Number(e.tokens) || 0;
+  if (tok) pills.push(el("span", { class: "metric-pill" }, `${fmtNum(tok)} tok`));
+  const dur = fmtDuration(Number(e.duration_ms));
+  if (dur) pills.push(el("span", { class: "metric-pill" }, dur));
+  return pills;
+}
+
+function metricDigestText(e) {
+  const m = e.meta || {};
+  const parts = [];
+  const la = Number(m.lines_added) || 0;
+  const lr = Number(m.lines_removed) || 0;
+  if (la || lr) parts.push(`${la ? `+${fmtNum(la)}` : ""}${la && lr ? " " : ""}${lr ? `−${fmtNum(lr)}` : ""}`);
+  const ft = Number(m.files_touched) || 0;
+  if (ft) parts.push(`${ft} file${ft === 1 ? "" : "s"}`);
+  const tc = Number(m.tool_calls) || 0;
+  if (tc) parts.push(`${fmtNum(tc)} tool${tc === 1 ? "" : "s"}`);
+  const tok = Number(e.tokens) || 0;
+  if (tok) parts.push(`${fmtNum(tok)} tok`);
+  return parts.join(" · ") || "session";
+}
+
+/* ---------- stream -------------------------------------------------------- */
+
 function renderEvent(e, isNew) {
   const color = agentColor(e.agent);
+  const model = stripModelPrefix(e.model);
+  const iso = tsToIso(e.ts);
   return el("article", {
     class: "event" + (isNew ? " event--new" : ""),
     style: `--agent-color:${color}`,
     "data-id": e.id,
   },
-    el("time", { class: "event__time", datetime: e.ts }, timeAgo(e.ts)),
+    el("time", { class: "event__time", datetime: iso }, timeAgo(iso)),
     el("div", { class: "event__body" },
-      el("p", { class: "event__summary" }, e.summary),
-      el("div", { class: "event__meta" },
+      el("div", { class: "event__meta event__meta--top" },
         el("span", { class: "agent-badge", style: `--agent-color:${color}` },
           el("span", { class: "dot", style: `background:${color};width:6px;height:6px;border-radius:50%` }),
           e.agent
         ),
-        el("span", { class: "event__meta-item" }, `· ${e.type}`),
-        e.project ? el("span", { class: "event__meta-item" }, `· ${e.project}`) : null,
-        e.model ? el("span", { class: "event__meta-item" }, `· ${e.model}`) : null,
-        Number.isFinite(e.duration_ms) ? el("span", { class: "event__meta-item" }, `· ${(e.duration_ms/1000).toFixed(1)}s`) : null,
-      )
+        model ? el("span", { class: "event__meta-item" }, `· ${model}`) : null,
+      ),
+      el("div", { class: "event__pills" }, ...metricPills(e)),
     ),
   );
 }
@@ -54,6 +146,8 @@ function renderStreamInto(container, events, newIds) {
   container.replaceChildren(...slice.map(e => renderEvent(e, newIds.has(e.id))));
 }
 
+/* ---------- pulse banner -------------------------------------------------- */
+
 function renderBannerInto(container, events) {
   if (!events || events.length === 0) {
     container.replaceChildren(
@@ -61,18 +155,19 @@ function renderBannerInto(container, events) {
     );
     return;
   }
-  // Take latest 8, duplicate for seamless marquee.
   const items = events.slice(0, 8).map(e => {
     const color = agentColor(e.agent);
+    const model = stripModelPrefix(e.model);
     return el("span", { class: "pulse-banner__item" },
       el("span", { style: `color:${color}` }, `▍${e.agent}`),
-      el("span", {}, ` ${e.type}: ${e.summary.length > 80 ? e.summary.slice(0,80)+"…" : e.summary}`),
+      el("span", {}, model ? ` ${model} · ${metricDigestText(e)}` : ` ${metricDigestText(e)}`),
     );
   });
   container.replaceChildren(...items, ...items.map(n => n.cloneNode(true)));
 }
 
-/* Stats panel */
+/* ---------- stats --------------------------------------------------------- */
+
 async function loadStats(baseUrl) {
   if (!baseUrl) return null;
   try {
@@ -82,52 +177,192 @@ async function loadStats(baseUrl) {
   } catch { return null; }
 }
 
+function tile(label, value, opts = {}) {
+  return el("div", { class: "stat-tile" },
+    el("div", { class: "stat-tile__label" }, label),
+    el("div", { class: "stat-tile__value", style: opts.small ? "font-size:1rem" : null }, String(value ?? "—")),
+  );
+}
+
 function renderStatsInto(container, stats) {
   if (!stats) {
     container.replaceChildren(el("div", { class: "stream-empty" }, "Stats unavailable."));
     return;
   }
-  const tiles = el("div", { class: "stats-grid" },
-    el("div", { class: "stat-tile" },
-      el("div", { class: "stat-tile__label" }, "Today"),
-      el("div", { class: "stat-tile__value" }, String(stats.today?.events ?? 0)),
-    ),
-    el("div", { class: "stat-tile" },
-      el("div", { class: "stat-tile__label" }, "Last 7 days"),
-      el("div", { class: "stat-tile__value" }, String(stats.last_7d?.events ?? 0)),
-    ),
-    el("div", { class: "stat-tile" },
-      el("div", { class: "stat-tile__label" }, "Last 30 days"),
-      el("div", { class: "stat-tile__value" }, String(stats.last_30d?.events ?? 0)),
-    ),
-    el("div", { class: "stat-tile" },
-      el("div", { class: "stat-tile__label" }, "Top project"),
-      el("div", { class: "stat-tile__value", style: "font-size:1rem" }, stats.top_project?.project ?? "—"),
-    ),
+  const wToday = stats.today || {};
+  const w7 = stats.last_7d || {};
+  const w30 = stats.last_30d || {};
+  const w365 = stats.last_365d || {};
+
+  const eventTiles = el("div", { class: "stats-grid" },
+    tile("Today", wToday.events ?? 0),
+    tile("Last 7 days", w7.events ?? 0),
+    tile("Last 30 days", w30.events ?? 0),
+    tile("Top model", stripModelPrefix(stats.top_model?.model) || "—", { small: true }),
+    tile("Lines added (30d)", `+${fmtNum(w30.lines_added ?? 0)}`),
+    tile("Lines removed (30d)", `−${fmtNum(w30.lines_removed ?? 0)}`),
+    tile("Tool calls (30d)", fmtNum(w30.tool_calls ?? 0)),
+    tile("Files touched (30d)", fmtNum(w30.files_touched ?? 0)),
+  );
+
+  const tokenTiles = el("div", { class: "stats-grid", style: "margin-top: var(--sp-5)" },
+    tile("Tokens today",     fmtNum(wToday.tokens ?? 0)),
+    tile("Tokens last 7d",   fmtNum(w7.tokens ?? 0)),
+    tile("Tokens last 30d",  fmtNum(w30.tokens ?? 0)),
+    tile("Tokens last 365d", fmtNum(w365.tokens ?? 0)),
   );
 
   const byAgentArr = Array.isArray(stats.by_agent) ? stats.by_agent : [];
   const byAgent = Object.fromEntries(byAgentArr.map(({ agent, c }) => [agent, c]));
-  const total = Math.max(1, Object.values(byAgent).reduce((a,b)=>a+b,0));
-  const bars = el("div", { style: "margin-top: var(--sp-5)" },
+  const totalA = Math.max(1, Object.values(byAgent).reduce((a,b)=>a+b,0));
+  const agentBars = el("div", { style: "margin-top: var(--sp-5)" },
     el("div", { class: "stat-tile__label", style: "margin-bottom: var(--sp-3)" }, "By agent (last 30 days)"),
     ...Object.entries(byAgent).sort((a,b)=>b[1]-a[1]).map(([name, n]) =>
       el("div", { class: "stat-bar" },
         el("span", { class: "stat-bar__label", style: `color:${agentColor(name)}` }, name),
         el("div", { class: "stat-bar__track" },
-          el("div", { class: "stat-bar__fill", style: `width:${(n/total*100).toFixed(1)}%` })
+          el("div", { class: "stat-bar__fill", style: `width:${(n/totalA*100).toFixed(1)}%` })
         ),
         el("span", { class: "stat-bar__count" }, String(n)),
       )
     )
   );
 
-  container.replaceChildren(tiles, bars);
+  const byModelArr = Array.isArray(stats.by_model) ? stats.by_model : [];
+  const maxModelTokens = Math.max(1, ...byModelArr.map(m => Number(m.tokens) || 0));
+  const modelBars = el("div", { style: "margin-top: var(--sp-5)" },
+    el("div", { class: "stat-tile__label", style: "margin-bottom: var(--sp-3)" }, "Tokens by model (last 365 days)"),
+    byModelArr.length
+      ? el("div", {}, ...byModelArr.map(m => {
+          const color = modelColor(m.model);
+          const tok = Number(m.tokens) || 0;
+          return el("div", { class: "stat-bar stat-bar--model" },
+            el("span", { class: "stat-bar__label", style: `color:${color}` }, stripModelPrefix(m.model)),
+            el("div", { class: "stat-bar__track" },
+              el("div", { class: "stat-bar__fill", style: `width:${(tok/maxModelTokens*100).toFixed(1)}%; background:${color}` })
+            ),
+            el("span", { class: "stat-bar__count" }, `${fmtNum(tok)} tok`),
+          );
+        }))
+      : el("div", { class: "stream-empty" }, "No token data yet.")
+  );
+
+  const buckets = stats.tokens_by_model || { day: [], week: [], year: [] };
+  const tokenBuckets = renderTokenBuckets(buckets);
+
+  container.replaceChildren(eventTiles, tokenTiles, agentBars, modelBars, tokenBuckets);
+}
+
+/* ---------- tokens-by-model bucketed widget ------------------------------- */
+
+function renderTokenBuckets(buckets) {
+  const wrap = el("div", { class: "token-buckets", style: "margin-top: var(--sp-5)" });
+  const header = el("div", { class: "token-buckets__header" },
+    el("div", { class: "stat-tile__label" }, "Token consumption"),
+    el("div", { class: "token-bucket-toggle", role: "tablist", "aria-label": "Bucket granularity" },
+      ...["day", "week", "year"].map((g, i) =>
+        el("button", {
+          type: "button",
+          class: "token-bucket-toggle__btn" + (g === "day" ? " is-active" : ""),
+          "data-granularity": g,
+          role: "tab",
+          "aria-selected": g === "day" ? "true" : "false",
+        }, g === "day" ? "Day" : g === "week" ? "Week" : "Year")
+      )
+    )
+  );
+  const chart = el("div", { class: "token-bucket-chart" });
+  wrap.append(header, chart);
+
+  function draw(granularity) {
+    const rows = Array.isArray(buckets[granularity]) ? buckets[granularity] : [];
+    // group rows by bucket key, preserving descending order
+    const byBucket = new Map();
+    for (const r of rows) {
+      const k = String(r.bucket);
+      if (!byBucket.has(k)) byBucket.set(k, { bucket: k, total: 0, segments: [] });
+      const entry = byBucket.get(k);
+      const tok = Number(r.tokens) || 0;
+      entry.total += tok;
+      entry.segments.push({ model: String(r.model || "unknown"), tokens: tok });
+    }
+    const all = Array.from(byBucket.values()); // already bucket-sorted DESC from server
+    const max = Math.max(1, ...all.map(b => b.total));
+
+    if (!all.length) {
+      chart.replaceChildren(el("div", { class: "stream-empty" }, "No token data in this window yet."));
+      return;
+    }
+
+    const rowsEl = all.slice(0, 30).map(b => {
+      // segments already model-sorted by tokens DESC from server
+      const totalPct = (b.total / max) * 100;
+      const segs = b.segments.map(s => {
+        const color = modelColor(s.model);
+        const widthPct = b.total > 0 ? (s.tokens / b.total) * 100 : 0;
+        return el("span", {
+          class: "token-bucket-row__segment",
+          style: `flex:${s.tokens || 0.0001} 1 0; background:${color}`,
+          title: `${b.bucket} · ${stripModelPrefix(s.model)}: ${fmtNum(s.tokens)} tok`,
+          "data-model": s.model,
+        });
+      });
+      return el("div", { class: "token-bucket-row" },
+        el("span", { class: "token-bucket-row__label" }, b.bucket),
+        el("div", { class: "token-bucket-row__track", style: `width:${totalPct.toFixed(1)}%` }, ...segs),
+        el("span", { class: "token-bucket-row__total" }, fmtNum(b.total)),
+      );
+    });
+
+    // legend: union of models appearing in current granularity
+    const modelSet = new Map();
+    for (const b of all) for (const s of b.segments) {
+      modelSet.set(s.model, (modelSet.get(s.model) || 0) + s.tokens);
+    }
+    const legendItems = Array.from(modelSet.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([m]) =>
+        el("span", { class: "token-legend__item" },
+          el("span", { class: "token-legend__dot", style: `background:${modelColor(m)}` }),
+          stripModelPrefix(m),
+        )
+      );
+    const legend = el("div", { class: "token-legend" }, ...legendItems);
+
+    chart.replaceChildren(...rowsEl, legend);
+  }
+
+  header.querySelectorAll(".token-bucket-toggle__btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      header.querySelectorAll(".token-bucket-toggle__btn").forEach(b => {
+        const active = b === btn;
+        b.classList.toggle("is-active", active);
+        b.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      draw(btn.dataset.granularity);
+    });
+  });
+
+  draw("day");
+  return wrap;
+}
+
+/* ---------- model color palette ------------------------------------------- */
+
+const MODEL_PALETTE = [
+  "#22d3ee", "#f59e0b", "#a855f7", "#10b981",
+  "#f43f5e", "#3b82f6", "#eab308", "#ec4899",
+  "#94a3b8", "#84cc16",
+];
+function modelColor(model) {
+  const key = stripModelPrefix(String(model || "unknown")).toLowerCase();
+  let h = 0;
+  for (let i = 0; i < key.length; i++) { h = (h * 31 + key.charCodeAt(i)) >>> 0; }
+  return MODEL_PALETTE[h % MODEL_PALETTE.length];
 }
 
 function renderHeatmapInto(container, stats) {
   const raw = stats?.heatmap ?? [];
-  // Worker emits {day, c} where day = epoch_ms / 86400000. Normalize.
   const heat = raw.map(d => ({
     count: d.count ?? d.c ?? 0,
     date: d.date ?? new Date((d.day ?? 0) * 86_400_000).toISOString().slice(0, 10),
@@ -145,7 +380,8 @@ function renderHeatmapInto(container, stats) {
   container.replaceChildren(grid);
 }
 
-/* Tabs */
+/* ---------- tabs ---------------------------------------------------------- */
+
 function wireTabs(tabsRoot) {
   const tabs = Array.from(tabsRoot.querySelectorAll("[role=tab]"));
   const panels = Array.from(document.querySelectorAll(".lab-panel"));
@@ -164,16 +400,36 @@ function wireTabs(tabsRoot) {
   });
 }
 
-/* Stack card live counts */
-function updateStackCounts(byAgent) {
-  document.querySelectorAll("[data-stack-agent]").forEach(card => {
-    const name = card.getAttribute("data-stack-agent");
-    const countEl = card.querySelector(".stack-card__count");
-    if (countEl) countEl.textContent = String(byAgent[name] ?? 0);
+function renderStackInto(container, byAgentArr) {
+  if (!container) return;
+  const entries = (Array.isArray(byAgentArr) ? byAgentArr : [])
+    .map(({ agent, c }) => ({ agent: String(agent), count: Number(c) || 0 }))
+    .filter(e => e.count > 0)
+    .sort((a, b) => b.count - a.count);
+
+  if (entries.length === 0) {
+    container.replaceChildren(
+      el("div", { class: "stream-empty" }, "Agents will appear here as they ping in…")
+    );
+    return;
+  }
+
+  const cards = entries.map(({ agent, count }) => {
+    const meta = agentMeta(agent);
+    const color = agentColor(agent);
+    return el("div", {
+      class: "stack-card",
+      "data-stack-agent": agent,
+      style: `--agent-color:${color}`,
+    },
+      el("span", { class: "stack-card__role" }, meta.role),
+      el("span", { class: "stack-card__name" }, meta.name),
+      el("span", { class: "stack-card__count" }, String(count)),
+    );
   });
+  container.replaceChildren(...cards);
 }
 
-/* Stat strip in hero */
 function updateHeroStats(stats) {
   const map = {
     "stat-today": stats?.today?.events,
@@ -183,8 +439,7 @@ function updateHeroStats(stats) {
   for (const [id, v] of Object.entries(map)) {
     const node = document.getElementById(id);
     if (!node) continue;
-    const target = Number(v ?? 0);
-    animateCount(node, target);
+    animateCount(node, Number(v ?? 0));
   }
 }
 
@@ -205,7 +460,8 @@ function animateCount(node, target) {
   requestAnimationFrame(step);
 }
 
-/* Boot */
+/* ---------- boot ---------------------------------------------------------- */
+
 export function initLiveLab() {
   const client = getActivityClient();
   const baseUrl = client.baseUrl;
@@ -218,28 +474,25 @@ export function initLiveLab() {
   if (tabsRoot) wireTabs(tabsRoot);
 
   const newIds = new Set();
+  const stackGrid = document.getElementById("stack-grid");
 
   document.addEventListener("agent-stream:update", (ev) => {
     const { events, newEvents = [] } = ev.detail || {};
     newEvents.forEach(e => newIds.add(e.id));
     if (banner) renderBannerInto(banner, events);
     if (stream) renderStreamInto(stream, events, newIds);
-    // clear "new" flag shortly after to avoid permanent animation
     setTimeout(() => newEvents.forEach(e => newIds.delete(e.id)), 1200);
   });
 
   client.start();
 
-  // Periodic stats refresh
   async function refreshStats() {
     const stats = await loadStats(baseUrl);
     if (statsPanel) renderStatsInto(statsPanel, stats);
     if (heatPanel) renderHeatmapInto(heatPanel, stats);
     if (stats) {
-      const byAgentMap = Array.isArray(stats.by_agent)
-        ? Object.fromEntries(stats.by_agent.map(({ agent, c }) => [agent, c]))
-        : (stats.by_agent || {});
-      updateStackCounts(byAgentMap);
+      const byAgentArr = Array.isArray(stats.by_agent) ? stats.by_agent : [];
+      if (stackGrid) renderStackInto(stackGrid, byAgentArr);
       updateHeroStats(stats);
     }
   }
