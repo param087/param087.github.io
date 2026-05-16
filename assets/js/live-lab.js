@@ -1,8 +1,9 @@
 /* live-lab.js — renders the activity stream, pulse banner, stats, heatmap.
  *
  * Privacy contract: events carry NO summary, NO project, NO file paths,
- * NO commands. Only agent, model, ts, duration_ms, tokens, and a numeric
- * meta digest (lines_added, lines_removed, tool_calls, files_touched).
+ * NO commands. Only agent, model, ts, duration_ms, tokens, a numeric meta
+ * digest (tool_calls, files_touched), and a task `type` from a fixed
+ * 9-value enum (code/refactor/test/debug/deploy/idea/review/docs/chore).
  */
 
 import { getActivityClient, timeAgo, agentColor } from "./activity-client.js";
@@ -70,20 +71,28 @@ function agentMeta(name) {
   return AGENT_META[name] ?? { name, role: "Agent" };
 }
 
+/* ---------- task metadata ------------------------------------------------- */
+
+const TASK_PALETTE = {
+  code:     "#22d3ee",
+  refactor: "#f59e0b",
+  test:     "#a3e635",
+  debug:    "#f87171",
+  deploy:   "#c084fc",
+  idea:     "#fbbf24",
+  review:   "#60a5fa",
+  docs:     "#34d399",
+  chore:    "#94a3b8",
+};
+function taskColor(t) {
+  return TASK_PALETTE[t] ?? "#94a3b8";
+}
+
 /* ---------- metric pills -------------------------------------------------- */
 
 function metricPills(e) {
   const m = e.meta || {};
   const pills = [];
-  const la = Number(m.lines_added) || 0;
-  const lr = Number(m.lines_removed) || 0;
-  if (la || lr) {
-    pills.push(el("span", { class: "metric-pill metric-pill--diff" },
-      la ? el("span", { class: "metric-pill__add" }, `+${fmtNum(la)}`) : null,
-      la && lr ? el("span", { class: "metric-pill__sep" }, " ") : null,
-      lr ? el("span", { class: "metric-pill__del" }, `−${fmtNum(lr)}`) : null,
-    ));
-  }
   const ft = Number(m.files_touched) || 0;
   if (ft) pills.push(el("span", { class: "metric-pill" }, `${ft} file${ft === 1 ? "" : "s"}`));
   const tc = Number(m.tool_calls) || 0;
@@ -98,9 +107,6 @@ function metricPills(e) {
 function metricDigestText(e) {
   const m = e.meta || {};
   const parts = [];
-  const la = Number(m.lines_added) || 0;
-  const lr = Number(m.lines_removed) || 0;
-  if (la || lr) parts.push(`${la ? `+${fmtNum(la)}` : ""}${la && lr ? " " : ""}${lr ? `−${fmtNum(lr)}` : ""}`);
   const ft = Number(m.files_touched) || 0;
   if (ft) parts.push(`${ft} file${ft === 1 ? "" : "s"}`);
   const tc = Number(m.tool_calls) || 0;
@@ -116,6 +122,7 @@ function renderEvent(e, isNew) {
   const color = agentColor(e.agent);
   const model = stripModelPrefix(e.model);
   const iso = tsToIso(e.ts);
+  const task = typeof e.type === "string" && e.type ? e.type : null;
   return el("article", {
     class: "event" + (isNew ? " event--new" : ""),
     style: `--agent-color:${color}`,
@@ -129,6 +136,11 @@ function renderEvent(e, isNew) {
           e.agent
         ),
         model ? el("span", { class: "event__meta-item" }, `· ${model}`) : null,
+        task ? el("span", {
+          class: "event__task",
+          "data-type": task,
+          style: `--task-color:${taskColor(task)}`,
+        }, task) : null,
       ),
       el("div", { class: "event__pills" }, ...metricPills(e)),
     ),
@@ -199,8 +211,6 @@ function renderStatsInto(container, stats) {
     tile("Last 7 days", w7.events ?? 0),
     tile("Last 30 days", w30.events ?? 0),
     tile("Top model", stripModelPrefix(stats.top_model?.model) || "—", { small: true }),
-    tile("Lines added (30d)", `+${fmtNum(w30.lines_added ?? 0)}`),
-    tile("Lines removed (30d)", `−${fmtNum(w30.lines_removed ?? 0)}`),
     tile("Tool calls (30d)", fmtNum(w30.tool_calls ?? 0)),
     tile("Files touched (30d)", fmtNum(w30.files_touched ?? 0)),
   );
@@ -228,6 +238,26 @@ function renderStatsInto(container, stats) {
     )
   );
 
+  const byTaskArr = Array.isArray(stats.by_type) ? stats.by_type.slice() : [];
+  byTaskArr.sort((a, b) => (Number(b.c) || 0) - (Number(a.c) || 0));
+  const totalT = Math.max(1, byTaskArr.reduce((a, b) => a + (Number(b.c) || 0), 0));
+  const taskBars = el("div", { style: "margin-top: var(--sp-5)" },
+    el("div", { class: "stat-tile__label", style: "margin-bottom: var(--sp-3)" }, "By task (last 30 days)"),
+    byTaskArr.length
+      ? el("div", {}, ...byTaskArr.map(({ type, c }) => {
+          const color = taskColor(type);
+          const n = Number(c) || 0;
+          return el("div", { class: "stat-bar stat-bar--task" },
+            el("span", { class: "stat-bar__label", style: `color:${color}` }, type),
+            el("div", { class: "stat-bar__track" },
+              el("div", { class: "stat-bar__fill", style: `width:${(n / totalT * 100).toFixed(1)}%; background:${color}` })
+            ),
+            el("span", { class: "stat-bar__count" }, String(n)),
+          );
+        }))
+      : el("div", { class: "stream-empty" }, "No task data yet.")
+  );
+
   const byModelArr = Array.isArray(stats.by_model) ? stats.by_model : [];
   const maxModelTokens = Math.max(1, ...byModelArr.map(m => Number(m.tokens) || 0));
   const modelBars = el("div", { style: "margin-top: var(--sp-5)" },
@@ -250,7 +280,7 @@ function renderStatsInto(container, stats) {
   const buckets = stats.tokens_by_model || { day: [], week: [], year: [] };
   const tokenBuckets = renderTokenBuckets(buckets);
 
-  container.replaceChildren(eventTiles, tokenTiles, agentBars, modelBars, tokenBuckets);
+  container.replaceChildren(eventTiles, tokenTiles, agentBars, taskBars, modelBars, tokenBuckets);
 }
 
 /* ---------- tokens-by-model bucketed widget ------------------------------- */

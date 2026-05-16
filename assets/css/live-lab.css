@@ -186,6 +186,22 @@
 .metric-pill__del { color: #ef4444; }
 .metric-pill__sep { color: var(--text-3); }
 
+/* Task chip on event card */
+.event__task {
+  --task-color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.5rem;
+  margin-left: 0.4rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--task-color) 55%, transparent);
+  background: color-mix(in srgb, var(--task-color) 14%, transparent);
+  color: var(--task-color);
+  font: 600 0.72rem/1.4 var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+}
+
 /* Empty/error state */
 .stream-empty {
   text-align: center;
