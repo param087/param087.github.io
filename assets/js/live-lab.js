@@ -1,9 +1,10 @@
 /* live-lab.js — renders the activity stream, pulse banner, stats, heatmap.
  *
- * Privacy contract: events carry NO summary, NO project, NO file paths,
- * NO commands. Only agent, model, ts, duration_ms, tokens, a numeric meta
- * digest (tool_calls, files_touched), and a task `type` from a fixed
- * 9-value enum (code/refactor/test/debug/deploy/idea/review/docs/chore).
+ * Event payload shape:
+ *   agent, model, ts, duration_ms, tokens, type (9-value enum),
+ *   meta: { tool_calls, files_touched, lines_added, lines_removed },
+ *   summary?: short LLM-generated one-liner (scrubbed client-side before send),
+ *   project?: repo / working-folder basename.
  */
 
 import { getActivityClient, timeAgo, agentColor } from "./activity-client.js";
@@ -121,6 +122,8 @@ function renderEvent(e, isNew) {
   const model = stripModelPrefix(e.model);
   const iso = tsToIso(e.ts);
   const task = typeof e.type === "string" && e.type ? e.type : null;
+  const summary = typeof e.summary === "string" && e.summary.trim() ? e.summary.trim() : null;
+  const project = typeof e.project === "string" && e.project.trim() ? e.project.trim() : null;
   return el("article", {
     class: "event" + (isNew ? " event--new" : ""),
     style: `--agent-color:${color}`,
@@ -128,17 +131,19 @@ function renderEvent(e, isNew) {
   },
     el("time", { class: "event__time", datetime: iso }, timeAgo(iso)),
     el("div", { class: "event__body" },
+      summary ? el("p", { class: "event__summary" }, summary) : null,
       el("div", { class: "event__meta event__meta--top" },
         el("span", { class: "agent-badge", style: `--agent-color:${color}` },
           el("span", { class: "dot", style: `background:${color};width:6px;height:6px;border-radius:50%` }),
           e.agent
         ),
-        model ? el("span", { class: "event__meta-item" }, `· ${model}`) : null,
         task ? el("span", {
           class: "event__task",
           "data-type": task,
           style: `--task-color:${taskColor(task)}`,
         }, task) : null,
+        model ? el("span", { class: "event__meta-item" }, `· ${model}`) : null,
+        project ? el("span", { class: "event__meta-item event__meta-item--project" }, `· ${project}`) : null,
       ),
       el("div", { class: "event__pills" }, ...metricPills(e)),
     ),
@@ -168,9 +173,13 @@ function renderBannerInto(container, events) {
   const items = events.slice(0, 8).map(e => {
     const color = agentColor(e.agent);
     const model = stripModelPrefix(e.model);
+    const summary = typeof e.summary === "string" && e.summary.trim() ? e.summary.trim() : null;
+    const project = typeof e.project === "string" && e.project.trim() ? e.project.trim() : null;
+    const tail = [model, project].filter(Boolean).join(" · ");
+    const headline = summary || metricDigestText(e);
     return el("span", { class: "pulse-banner__item" },
       el("span", { style: `color:${color}` }, `▍${e.agent}`),
-      el("span", {}, model ? ` ${model} · ${metricDigestText(e)}` : ` ${metricDigestText(e)}`),
+      el("span", {}, tail ? ` ${headline} — ${tail}` : ` ${headline}`),
     );
   });
   container.replaceChildren(...items, ...items.map(n => n.cloneNode(true)));
