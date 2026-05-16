@@ -146,16 +146,20 @@ function renderHeatmapInto(container, stats) {
 }
 
 /* Tabs */
-function wireTabs(root) {
-  const tabs = root.querySelectorAll("[role=tab]");
-  const panels = root.querySelectorAll(".lab-panel");
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      tabs.forEach(t => t.setAttribute("aria-selected", "false"));
-      panels.forEach(p => p.hidden = true);
-      tab.setAttribute("aria-selected", "true");
-      const panel = root.querySelector(`#${tab.getAttribute("aria-controls")}`);
-      if (panel) panel.hidden = false;
+function wireTabs(tabsRoot) {
+  const tabs = Array.from(tabsRoot.querySelectorAll("[role=tab]"));
+  const panels = Array.from(document.querySelectorAll(".lab-panel"));
+  const activate = (tab) => {
+    tabs.forEach(t => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
+    panels.forEach(p => p.hidden = true);
+    const panel = document.getElementById(tab.getAttribute("aria-controls"));
+    if (panel) panel.hidden = false;
+  };
+  tabs.forEach((tab, i) => {
+    tab.addEventListener("click", () => activate(tab));
+    tab.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") { e.preventDefault(); const n = tabs[(i + 1) % tabs.length]; n.focus(); n.click(); }
+      if (e.key === "ArrowLeft")  { e.preventDefault(); const n = tabs[(i - 1 + tabs.length) % tabs.length]; n.focus(); n.click(); }
     });
   });
 }

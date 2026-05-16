@@ -24,8 +24,8 @@
   --accent: #22d3ee;          /* cyan — opencode */
   --accent-2: #f59e0b;        /* amber — claude-code */
   --accent-3: #a855f7;        /* purple — copilot */
-  --accent-4: #10b981;        /* emerald — jules */
-  --accent-5: #ec4899;        /* pink — cursor */
+  --accent-4: #10b981;        /* emerald */
+  --accent-5: #ec4899;        /* pink */
   --accent-soft: rgba(34, 211, 238, 0.14);
   --accent-glow: 0 0 24px rgba(34, 211, 238, 0.35);
 
@@ -33,8 +33,6 @@
   --agent-opencode: #22d3ee;
   --agent-claude-code: #f59e0b;
   --agent-copilot: #a855f7;
-  --agent-jules: #10b981;
-  --agent-cursor: #ec4899;
   --agent-codex: #94a3b8;
   --agent-aider: #94a3b8;
   --agent-other: #94a3b8;

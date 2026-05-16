@@ -169,8 +169,6 @@ export const AGENT_COLORS = {
   opencode:      "#22d3ee",
   "claude-code": "#f59e0b",
   copilot:       "#a855f7",
-  jules:         "#10b981",
-  cursor:        "#ec4899",
   codex:         "#94a3b8",
   aider:         "#94a3b8",
   other:         "#94a3b8",

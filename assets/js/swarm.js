@@ -8,7 +8,7 @@
 
 import { AGENT_COLORS, agentColor } from "./activity-client.js";
 
-const ORBIT_AGENTS = ["opencode", "claude-code", "copilot", "jules", "cursor", "codex"];
+const ORBIT_AGENTS = ["opencode", "claude-code", "copilot", "codex"];
 const TAU = Math.PI * 2;
 
 export class Swarm {
