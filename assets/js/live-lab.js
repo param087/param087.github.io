@@ -90,23 +90,24 @@ function renderStatsInto(container, stats) {
   const tiles = el("div", { class: "stats-grid" },
     el("div", { class: "stat-tile" },
       el("div", { class: "stat-tile__label" }, "Today"),
-      el("div", { class: "stat-tile__value" }, String(stats.today ?? 0)),
+      el("div", { class: "stat-tile__value" }, String(stats.today?.events ?? 0)),
     ),
     el("div", { class: "stat-tile" },
       el("div", { class: "stat-tile__label" }, "Last 7 days"),
-      el("div", { class: "stat-tile__value" }, String(stats.last_7d ?? 0)),
+      el("div", { class: "stat-tile__value" }, String(stats.last_7d?.events ?? 0)),
     ),
     el("div", { class: "stat-tile" },
       el("div", { class: "stat-tile__label" }, "Last 30 days"),
-      el("div", { class: "stat-tile__value" }, String(stats.last_30d ?? 0)),
+      el("div", { class: "stat-tile__value" }, String(stats.last_30d?.events ?? 0)),
     ),
     el("div", { class: "stat-tile" },
       el("div", { class: "stat-tile__label" }, "Top project"),
-      el("div", { class: "stat-tile__value", style: "font-size:1rem" }, stats.top_project ?? "—"),
+      el("div", { class: "stat-tile__value", style: "font-size:1rem" }, stats.top_project?.project ?? "—"),
     ),
   );
 
-  const byAgent = stats.by_agent ?? {};
+  const byAgentArr = Array.isArray(stats.by_agent) ? stats.by_agent : [];
+  const byAgent = Object.fromEntries(byAgentArr.map(({ agent, c }) => [agent, c]));
   const total = Math.max(1, Object.values(byAgent).reduce((a,b)=>a+b,0));
   const bars = el("div", { style: "margin-top: var(--sp-5)" },
     el("div", { class: "stat-tile__label", style: "margin-bottom: var(--sp-3)" }, "By agent (last 30 days)"),
@@ -125,7 +126,12 @@ function renderStatsInto(container, stats) {
 }
 
 function renderHeatmapInto(container, stats) {
-  const heat = stats?.heatmap ?? [];
+  const raw = stats?.heatmap ?? [];
+  // Worker emits {day, c} where day = epoch_ms / 86400000. Normalize.
+  const heat = raw.map(d => ({
+    count: d.count ?? d.c ?? 0,
+    date: d.date ?? new Date((d.day ?? 0) * 86_400_000).toISOString().slice(0, 10),
+  }));
   if (!heat.length) {
     container.replaceChildren(el("div", { class: "stream-empty" }, "Heatmap will populate as agents check in."));
     return;
@@ -135,7 +141,6 @@ function renderHeatmapInto(container, stats) {
     const lvl = d.count === 0 ? 0 : Math.min(4, Math.ceil(d.count / max * 4));
     return el("div", { class: "heatmap__cell", "data-l": String(lvl), title: `${d.date}: ${d.count}` });
   });
-  // Wrap in a 12-week-wide grid
   const grid = el("div", { class: "heatmap" }, ...cells);
   container.replaceChildren(grid);
 }
@@ -167,9 +172,9 @@ function updateStackCounts(byAgent) {
 /* Stat strip in hero */
 function updateHeroStats(stats) {
   const map = {
-    "stat-today": stats?.today,
-    "stat-7d": stats?.last_7d,
-    "stat-30d": stats?.last_30d,
+    "stat-today": stats?.today?.events,
+    "stat-7d": stats?.last_7d?.events,
+    "stat-30d": stats?.last_30d?.events,
   };
   for (const [id, v] of Object.entries(map)) {
     const node = document.getElementById(id);
@@ -225,7 +230,10 @@ export function initLiveLab() {
     if (statsPanel) renderStatsInto(statsPanel, stats);
     if (heatPanel) renderHeatmapInto(heatPanel, stats);
     if (stats) {
-      updateStackCounts(stats.by_agent || {});
+      const byAgentMap = Array.isArray(stats.by_agent)
+        ? Object.fromEntries(stats.by_agent.map(({ agent, c }) => [agent, c]))
+        : (stats.by_agent || {});
+      updateStackCounts(byAgentMap);
       updateHeroStats(stats);
     }
   }
