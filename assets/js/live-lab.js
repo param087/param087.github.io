@@ -97,8 +97,6 @@ function metricPills(e) {
   if (ft) pills.push(el("span", { class: "metric-pill" }, `${ft} file${ft === 1 ? "" : "s"}`));
   const tc = Number(m.tool_calls) || 0;
   if (tc) pills.push(el("span", { class: "metric-pill" }, `${fmtNum(tc)} tool${tc === 1 ? "" : "s"}`));
-  const tok = Number(e.tokens) || 0;
-  if (tok) pills.push(el("span", { class: "metric-pill" }, `${fmtNum(tok)} tok`));
   const dur = fmtDuration(Number(e.duration_ms));
   if (dur) pills.push(el("span", { class: "metric-pill" }, dur));
   return pills;
@@ -111,8 +109,8 @@ function metricDigestText(e) {
   if (ft) parts.push(`${ft} file${ft === 1 ? "" : "s"}`);
   const tc = Number(m.tool_calls) || 0;
   if (tc) parts.push(`${fmtNum(tc)} tool${tc === 1 ? "" : "s"}`);
-  const tok = Number(e.tokens) || 0;
-  if (tok) parts.push(`${fmtNum(tok)} tok`);
+  const dur = fmtDuration(Number(e.duration_ms));
+  if (dur) parts.push(dur);
   return parts.join(" · ") || "session";
 }
 
@@ -204,22 +202,33 @@ function renderStatsInto(container, stats) {
   const wToday = stats.today || {};
   const w7 = stats.last_7d || {};
   const w30 = stats.last_30d || {};
-  const w365 = stats.last_365d || {};
 
   const eventTiles = el("div", { class: "stats-grid" },
     tile("Today", wToday.events ?? 0),
     tile("Last 7 days", w7.events ?? 0),
     tile("Last 30 days", w30.events ?? 0),
-    tile("Top model", stripModelPrefix(stats.top_model?.model) || "—", { small: true }),
     tile("Tool calls (30d)", fmtNum(w30.tool_calls ?? 0)),
     tile("Files touched (30d)", fmtNum(w30.files_touched ?? 0)),
   );
 
-  const tokenTiles = el("div", { class: "stats-grid", style: "margin-top: var(--sp-5)" },
-    tile("Tokens today",     fmtNum(wToday.tokens ?? 0)),
-    tile("Tokens last 7d",   fmtNum(w7.tokens ?? 0)),
-    tile("Tokens last 30d",  fmtNum(w30.tokens ?? 0)),
-    tile("Tokens last 365d", fmtNum(w365.tokens ?? 0)),
+  const byTaskArr = Array.isArray(stats.by_type) ? stats.by_type.slice() : [];
+  byTaskArr.sort((a, b) => (Number(b.c) || 0) - (Number(a.c) || 0));
+  const totalT = Math.max(1, byTaskArr.reduce((a, b) => a + (Number(b.c) || 0), 0));
+  const taskBars = el("div", { style: "margin-top: var(--sp-5)" },
+    el("div", { class: "stat-tile__label", style: "margin-bottom: var(--sp-3)" }, "What agents are working on (last 30 days)"),
+    byTaskArr.length
+      ? el("div", {}, ...byTaskArr.map(({ type, c }) => {
+          const color = taskColor(type);
+          const n = Number(c) || 0;
+          return el("div", { class: "stat-bar stat-bar--task" },
+            el("span", { class: "stat-bar__label", style: `color:${color}` }, type),
+            el("div", { class: "stat-bar__track" },
+              el("div", { class: "stat-bar__fill", style: `width:${(n / totalT * 100).toFixed(1)}%; background:${color}` })
+            ),
+            el("span", { class: "stat-bar__count" }, String(n)),
+          );
+        }))
+      : el("div", { class: "stream-empty" }, "No task data yet.")
   );
 
   const byAgentArr = Array.isArray(stats.by_agent) ? stats.by_agent : [];
@@ -238,157 +247,7 @@ function renderStatsInto(container, stats) {
     )
   );
 
-  const byTaskArr = Array.isArray(stats.by_type) ? stats.by_type.slice() : [];
-  byTaskArr.sort((a, b) => (Number(b.c) || 0) - (Number(a.c) || 0));
-  const totalT = Math.max(1, byTaskArr.reduce((a, b) => a + (Number(b.c) || 0), 0));
-  const taskBars = el("div", { style: "margin-top: var(--sp-5)" },
-    el("div", { class: "stat-tile__label", style: "margin-bottom: var(--sp-3)" }, "By task (last 30 days)"),
-    byTaskArr.length
-      ? el("div", {}, ...byTaskArr.map(({ type, c }) => {
-          const color = taskColor(type);
-          const n = Number(c) || 0;
-          return el("div", { class: "stat-bar stat-bar--task" },
-            el("span", { class: "stat-bar__label", style: `color:${color}` }, type),
-            el("div", { class: "stat-bar__track" },
-              el("div", { class: "stat-bar__fill", style: `width:${(n / totalT * 100).toFixed(1)}%; background:${color}` })
-            ),
-            el("span", { class: "stat-bar__count" }, String(n)),
-          );
-        }))
-      : el("div", { class: "stream-empty" }, "No task data yet.")
-  );
-
-  const byModelArr = Array.isArray(stats.by_model) ? stats.by_model : [];
-  const maxModelTokens = Math.max(1, ...byModelArr.map(m => Number(m.tokens) || 0));
-  const modelBars = el("div", { style: "margin-top: var(--sp-5)" },
-    el("div", { class: "stat-tile__label", style: "margin-bottom: var(--sp-3)" }, "Tokens by model (last 365 days)"),
-    byModelArr.length
-      ? el("div", {}, ...byModelArr.map(m => {
-          const color = modelColor(m.model);
-          const tok = Number(m.tokens) || 0;
-          return el("div", { class: "stat-bar stat-bar--model" },
-            el("span", { class: "stat-bar__label", style: `color:${color}` }, stripModelPrefix(m.model)),
-            el("div", { class: "stat-bar__track" },
-              el("div", { class: "stat-bar__fill", style: `width:${(tok/maxModelTokens*100).toFixed(1)}%; background:${color}` })
-            ),
-            el("span", { class: "stat-bar__count" }, `${fmtNum(tok)} tok`),
-          );
-        }))
-      : el("div", { class: "stream-empty" }, "No token data yet.")
-  );
-
-  const buckets = stats.tokens_by_model || { day: [], week: [], year: [] };
-  const tokenBuckets = renderTokenBuckets(buckets);
-
-  container.replaceChildren(eventTiles, tokenTiles, agentBars, taskBars, modelBars, tokenBuckets);
-}
-
-/* ---------- tokens-by-model bucketed widget ------------------------------- */
-
-function renderTokenBuckets(buckets) {
-  const wrap = el("div", { class: "token-buckets", style: "margin-top: var(--sp-5)" });
-  const header = el("div", { class: "token-buckets__header" },
-    el("div", { class: "stat-tile__label" }, "Token consumption"),
-    el("div", { class: "token-bucket-toggle", role: "tablist", "aria-label": "Bucket granularity" },
-      ...["day", "week", "year"].map((g, i) =>
-        el("button", {
-          type: "button",
-          class: "token-bucket-toggle__btn" + (g === "day" ? " is-active" : ""),
-          "data-granularity": g,
-          role: "tab",
-          "aria-selected": g === "day" ? "true" : "false",
-        }, g === "day" ? "Day" : g === "week" ? "Week" : "Year")
-      )
-    )
-  );
-  const chart = el("div", { class: "token-bucket-chart" });
-  wrap.append(header, chart);
-
-  function draw(granularity) {
-    const rows = Array.isArray(buckets[granularity]) ? buckets[granularity] : [];
-    // group rows by bucket key, preserving descending order
-    const byBucket = new Map();
-    for (const r of rows) {
-      const k = String(r.bucket);
-      if (!byBucket.has(k)) byBucket.set(k, { bucket: k, total: 0, segments: [] });
-      const entry = byBucket.get(k);
-      const tok = Number(r.tokens) || 0;
-      entry.total += tok;
-      entry.segments.push({ model: String(r.model || "unknown"), tokens: tok });
-    }
-    const all = Array.from(byBucket.values()); // already bucket-sorted DESC from server
-    const max = Math.max(1, ...all.map(b => b.total));
-
-    if (!all.length) {
-      chart.replaceChildren(el("div", { class: "stream-empty" }, "No token data in this window yet."));
-      return;
-    }
-
-    const rowsEl = all.slice(0, 30).map(b => {
-      // segments already model-sorted by tokens DESC from server
-      const totalPct = (b.total / max) * 100;
-      const segs = b.segments.map(s => {
-        const color = modelColor(s.model);
-        const widthPct = b.total > 0 ? (s.tokens / b.total) * 100 : 0;
-        return el("span", {
-          class: "token-bucket-row__segment",
-          style: `flex:${s.tokens || 0.0001} 1 0; background:${color}`,
-          title: `${b.bucket} · ${stripModelPrefix(s.model)}: ${fmtNum(s.tokens)} tok`,
-          "data-model": s.model,
-        });
-      });
-      return el("div", { class: "token-bucket-row" },
-        el("span", { class: "token-bucket-row__label" }, b.bucket),
-        el("div", { class: "token-bucket-row__track", style: `width:${totalPct.toFixed(1)}%` }, ...segs),
-        el("span", { class: "token-bucket-row__total" }, fmtNum(b.total)),
-      );
-    });
-
-    // legend: union of models appearing in current granularity
-    const modelSet = new Map();
-    for (const b of all) for (const s of b.segments) {
-      modelSet.set(s.model, (modelSet.get(s.model) || 0) + s.tokens);
-    }
-    const legendItems = Array.from(modelSet.entries())
-      .sort((a, b) => b[1] - a[1])
-      .map(([m]) =>
-        el("span", { class: "token-legend__item" },
-          el("span", { class: "token-legend__dot", style: `background:${modelColor(m)}` }),
-          stripModelPrefix(m),
-        )
-      );
-    const legend = el("div", { class: "token-legend" }, ...legendItems);
-
-    chart.replaceChildren(...rowsEl, legend);
-  }
-
-  header.querySelectorAll(".token-bucket-toggle__btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      header.querySelectorAll(".token-bucket-toggle__btn").forEach(b => {
-        const active = b === btn;
-        b.classList.toggle("is-active", active);
-        b.setAttribute("aria-selected", active ? "true" : "false");
-      });
-      draw(btn.dataset.granularity);
-    });
-  });
-
-  draw("day");
-  return wrap;
-}
-
-/* ---------- model color palette ------------------------------------------- */
-
-const MODEL_PALETTE = [
-  "#22d3ee", "#f59e0b", "#a855f7", "#10b981",
-  "#f43f5e", "#3b82f6", "#eab308", "#ec4899",
-  "#94a3b8", "#84cc16",
-];
-function modelColor(model) {
-  const key = stripModelPrefix(String(model || "unknown")).toLowerCase();
-  let h = 0;
-  for (let i = 0; i < key.length; i++) { h = (h * 31 + key.charCodeAt(i)) >>> 0; }
-  return MODEL_PALETTE[h % MODEL_PALETTE.length];
+  container.replaceChildren(eventTiles, taskBars, agentBars);
 }
 
 function renderHeatmapInto(container, stats) {
