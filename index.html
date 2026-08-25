@@ -310,7 +310,7 @@
                 <ul class="tl-bullets">
                     <li>Designed event-driven telemetry pipeline (.NET Azure Functions + Service Bus) ingesting device metrics for <strong>200K+ customers</strong>; <strong>99.9%</strong> delivery reliability, <strong>−35%</strong> processing latency.</li>
                     <li>Built AI-driven unit-test generation workflow (OpenAI + agent orchestration) — coverage <strong>80% → 90%</strong>, authoring time <strong>−60%</strong>.</li>
-                    <li>Leading SQL sharding of the telemetry datastore — partitioning by tenant to sustain ingest growth and keep query latency bounded as device volume scales.</li>
+                    <li>Leading SQL sharding of the telemetry datastore — tenant-keyed partitioning across <strong>16 shards</strong> over <strong>2B+</strong> device-metric rows; p95 query latency 1.4s → <strong>380ms (−73%)</strong> with headroom for <strong>3×</strong> ingest growth.</li>
                 </ul>
             </article>
 
