@@ -1,6 +1,6 @@
 # Param Bhavsar - Portfolio Website
 
-A modern, responsive portfolio website showcasing the work and experience of Param Bhavsar, a Software Engineer with 4+ years of experience.
+A modern, responsive portfolio website showcasing the work and experience of Param Bhavsar, a Lead Software Engineer with 4+ years of experience.
 
 ## 🌟 Features
 
